@@ -1,0 +1,64 @@
+{
+  "name": "mite-mcp-server",
+  "version": "0.1.0",
+  "description": "MCP server for the mite time tracking API — ready-made reports and a safety layer (read-only by default). Unofficial.",
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "mite",
+    "time-tracking",
+    "claude",
+    "ai",
+    "reporting"
+  ],
+  "homepage": "https://github.com/Stefan39/mite-mcp-server#readme",
+  "bugs": {
+    "url": "https://github.com/Stefan39/mite-mcp-server/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Stefan39/mite-mcp-server.git"
+  },
+  "license": "MIT",
+  "author": "Stefan Jacomeit (https://www.jacomeit.de)",
+  "type": "module",
+  "bin": {
+    "mite-mcp-server": "dist/index.js"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "README.de.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "check": "npm run lint && npm run format:check && npm run typecheck && npm run test:coverage && npm run build",
+    "start": "node dist/index.js",
+    "prepublishOnly": "npm run check"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/server": "^2.3.1",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@modelcontextprotocol/client": "^2.3.1",
+    "@types/node": "^22.20.5",
+    "@vitest/coverage-v8": "^5.0.5",
+    "eslint": "^10.13.0",
+    "prettier": "^3.9.10",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.72.0",
+    "vitest": "^5.0.5"
+  }
+}
