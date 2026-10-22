@@ -31,6 +31,18 @@ export interface ProjectMonthReport {
 
 const round2 = (value: number): number => Math.round(value * 100) / 100;
 
+/** Month of a group as YYYY-MM. mite sends `month: "YYYYMM"`; older shapes carry a start date. */
+export function groupMonth(group: MiteTimeEntryGroup['time_entry_group']): string {
+  if (typeof group.month === 'string' && /^\d{6}$/.test(group.month)) {
+    return `${group.month.slice(0, 4)}-${group.month.slice(4)}`;
+  }
+  const start = group.time_entries_params?.from ?? group.from;
+  if (typeof start === 'string' && /^\d{4}-\d{2}/.test(start)) {
+    return start.slice(0, 7);
+  }
+  return 'unknown';
+}
+
 /** Turns mite's grouped time entries into report rows: minutes → hours, cents → currency units. */
 export function buildReport(
   groups: MiteTimeEntryGroup[],
@@ -38,7 +50,7 @@ export function buildReport(
 ): ProjectMonthReport {
   const rows = groups
     .map(({ time_entry_group: group }) => ({
-      month: group.from.slice(0, 7),
+      month: groupMonth(group),
       project_id: group.project_id ?? null,
       project_name: group.project_name ?? '(no project)',
       minutes: group.minutes,

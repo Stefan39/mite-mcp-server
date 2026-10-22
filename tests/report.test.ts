@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import type { MiteTimeEntryGroup } from '../src/mite/types.js';
-import { buildReport, renderReport } from '../src/tools/reportProjectsByMonth.js';
+import { buildReport, groupMonth, renderReport } from '../src/tools/reportProjectsByMonth.js';
 
 const group = (
   from: string,
@@ -10,8 +10,8 @@ const group = (
   project: [number, string] | null,
 ): MiteTimeEntryGroup => ({
   time_entry_group: {
-    from,
-    to: from,
+    month: from.slice(0, 7).replace('-', ''),
+    time_entries_params: { from, to: from },
     minutes,
     revenue,
     project_id: project?.[0] ?? null,
@@ -67,5 +67,25 @@ describe('renderReport', () => {
     expect(renderReport(buildReport([group('2026-07-01', 60, null, [1, 'A'])], null))).toContain(
       '1 h | –',
     );
+  });
+});
+
+describe('groupMonth', () => {
+  const base = { minutes: 60, revenue: null };
+
+  it('reads the month mite sends for month groups (YYYYMM)', () => {
+    expect(
+      groupMonth({ ...base, month: '202606', time_entries_params: { from: '2026-06-01' } }),
+    ).toBe('2026-06');
+  });
+
+  it('falls back to the start date of the group', () => {
+    expect(groupMonth({ ...base, time_entries_params: { from: '2026-05-01' } })).toBe('2026-05');
+    expect(groupMonth({ ...base, from: '2026-04-01' })).toBe('2026-04');
+  });
+
+  it('never throws on an unexpected shape', () => {
+    expect(groupMonth({ ...base, month: 'June' })).toBe('unknown');
+    expect(groupMonth(base)).toBe('unknown');
   });
 });

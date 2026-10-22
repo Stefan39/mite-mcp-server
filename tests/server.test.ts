@@ -66,12 +66,12 @@ describe('mite_report_projects_by_month', () => {
   const groups = [
     {
       time_entry_group: {
-        from: '2026-07-01',
-        to: '2026-07-31',
         minutes: 600,
+        time_entries_params: { from: '2026-07-01', to: '2026-07-31', project_id: '3' },
         revenue: 75000,
         project_id: 3,
         project_name: 'Website',
+        month: '202607',
       },
     },
   ];

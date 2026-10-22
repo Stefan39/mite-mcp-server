@@ -23,9 +23,12 @@ export interface MiteTimeEntryGroup {
     minutes: number;
     /** Revenue in cents; `null` when no hourly rate applies. */
     revenue: number | null;
-    /** Start and end date of the group (YYYY-MM-DD). */
-    from: string;
-    to: string;
+    /** Present when grouped by month, as `YYYYMM` (e.g. "202606"). */
+    month?: string;
+    /** Parameters that list the entries behind this group, including its date range. */
+    time_entries_params?: { from?: string; to?: string; [key: string]: unknown };
+    /** Documented by mite, but not sent for month groups. Kept as a fallback. */
+    from?: string;
     project_id?: number | null;
     project_name?: string | null;
     [key: string]: unknown;
