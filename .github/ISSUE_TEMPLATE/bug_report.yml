@@ -1,0 +1,36 @@
+name: Bug report
+description: Something does not work as documented
+labels: [bug]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened?
+      description: Expected vs. actual behaviour, and which tool you called with which arguments.
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: mite-mcp-server version
+    validations:
+      required: true
+  - type: input
+    id: client
+    attributes:
+      label: MCP client and Node.js version
+      placeholder: Claude Desktop 1.x, Node 22.x
+    validations:
+      required: true
+  - type: textarea
+    id: log
+    attributes:
+      label: Server log (stderr)
+      render: text
+  - type: checkboxes
+    id: secrets
+    attributes:
+      label: Privacy
+      options:
+        - label: I removed API keys, account names and personal data from this report.
+          required: true
