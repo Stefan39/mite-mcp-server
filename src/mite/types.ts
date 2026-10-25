@@ -66,3 +66,28 @@ export interface MiteTracker {
     };
   };
 }
+
+export interface MiteCustomer {
+  customer: { id: number; name: string; note: string; archived: boolean };
+}
+
+export interface MiteProject {
+  project: {
+    id: number;
+    name: string;
+    customer_id: number | null;
+    customer_name: string | null;
+    archived: boolean;
+    budget: number;
+    budget_type: string;
+    note: string;
+  };
+}
+
+export interface MiteService {
+  service: { id: number; name: string; billable: boolean; archived: boolean; note: string };
+}
+
+export interface MiteUser {
+  user: { id: number; name: string; role: string; archived: boolean };
+}

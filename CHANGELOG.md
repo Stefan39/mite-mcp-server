@@ -14,4 +14,5 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), ver
 - `mite_list_time_entries`: single time entries for a period with filters and paging (`limit`, `page`, `has_more`).
 - `mite_get_time_entry`: one time entry by id.
 - `mite_tracker_status`: whether the mite tracker is running, and on which time entry.
+- `mite_list_customers`, `mite_list_projects`, `mite_list_services`, `mite_list_users`: master data, active or archived (`archived: true`); no email or hourly rates.
 - mite API client with polite throttling, retries on 429/5xx and API-key redaction.

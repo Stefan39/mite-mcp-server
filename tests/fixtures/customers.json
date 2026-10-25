@@ -1,0 +1,28 @@
+[
+  {
+    "customer": {
+      "created_at": "2021-08-31T17:22:24+02:00",
+      "hourly_rate": 0,
+      "id": 644036,
+      "name": "Customer 1",
+      "note": "",
+      "updated_at": "2021-08-31T17:22:24+02:00",
+      "archived": false,
+      "active_hourly_rate": null,
+      "hourly_rates_per_service": []
+    }
+  },
+  {
+    "customer": {
+      "created_at": "2021-01-18T14:02:04+01:00",
+      "hourly_rate": 10000,
+      "id": 623575,
+      "name": "Customer 2",
+      "note": "",
+      "updated_at": "2021-01-18T14:02:04+01:00",
+      "archived": false,
+      "active_hourly_rate": null,
+      "hourly_rates_per_service": []
+    }
+  }
+]
