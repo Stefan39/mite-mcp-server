@@ -1,0 +1,15 @@
+[
+  {
+    "user": {
+      "created_at": "2017-01-16T10:39:28+01:00",
+      "email": "user101803@example.com",
+      "id": 101803,
+      "name": "User 2",
+      "note": "Example note",
+      "updated_at": "2017-06-29T17:50:12+02:00",
+      "archived": true,
+      "language": "de",
+      "role": "time_tracker"
+    }
+  }
+]

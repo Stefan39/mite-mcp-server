@@ -1,0 +1,36 @@
+[
+  {
+    "project": {
+      "budget": 0,
+      "budget_type": "minutes",
+      "created_at": "2018-10-22T12:12:23+02:00",
+      "customer_id": 423031,
+      "hourly_rate": 10000,
+      "id": 2615477,
+      "name": "Project 4",
+      "note": "",
+      "updated_at": "2021-10-21T09:42:08+02:00",
+      "archived": true,
+      "active_hourly_rate": "hourly_rate",
+      "hourly_rates_per_service": [],
+      "customer_name": "Customer 9"
+    }
+  },
+  {
+    "project": {
+      "budget": 0,
+      "budget_type": "minutes",
+      "created_at": "2018-03-15T15:54:47+01:00",
+      "customer_id": 487380,
+      "hourly_rate": 0,
+      "id": 2408933,
+      "name": "Project 5",
+      "note": "",
+      "updated_at": "2021-10-21T09:42:05+02:00",
+      "archived": true,
+      "active_hourly_rate": null,
+      "hourly_rates_per_service": [],
+      "customer_name": "Customer 10"
+    }
+  }
+]

@@ -1,0 +1,15 @@
+[
+  {
+    "user": {
+      "created_at": "2010-09-13T18:26:15+02:00",
+      "email": "user29508@example.com",
+      "id": 29508,
+      "name": "User 1",
+      "note": "",
+      "updated_at": "2026-10-09T18:27:34+02:00",
+      "archived": false,
+      "language": "de",
+      "role": "owner"
+    }
+  }
+]

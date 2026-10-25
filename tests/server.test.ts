@@ -27,7 +27,11 @@ describe('tool registration', () => {
   it('registers no write tool in read-only mode', async () => {
     expect(await toolNames()).toEqual([
       'mite_get_time_entry',
+      'mite_list_customers',
+      'mite_list_projects',
+      'mite_list_services',
       'mite_list_time_entries',
+      'mite_list_users',
       'mite_report_projects_by_month',
       'mite_tracker_status',
       'mite_whoami',
@@ -70,6 +74,10 @@ describe('mite_whoami', () => {
           'mite_list_time_entries',
           'mite_get_time_entry',
           'mite_tracker_status',
+          'mite_list_customers',
+          'mite_list_projects',
+          'mite_list_services',
+          'mite_list_users',
         ],
       },
     });

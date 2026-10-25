@@ -1,6 +1,7 @@
 import type { ToolDefinition } from './definition.js';
 import { getTimeEntry } from './getTimeEntry.js';
 import { listTimeEntries } from './listTimeEntries.js';
+import { listCustomers, listProjects, listServices, listUsers } from './masterData.js';
 import { reportProjectsByMonth } from './reportProjectsByMonth.js';
 import { trackerStatus } from './trackerStatus.js';
 import { whoami } from './whoami.js';
@@ -12,4 +13,8 @@ export const allTools: readonly ToolDefinition[] = [
   listTimeEntries,
   getTimeEntry,
   trackerStatus,
+  listCustomers,
+  listProjects,
+  listServices,
+  listUsers,
 ];

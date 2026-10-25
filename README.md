@@ -24,6 +24,10 @@ Ask Claude about your [mite](https://mite.de) time tracking — "How many hours 
 | `mite_list_time_entries`        | read-only | Single time entries for a period, newest first; filters, `limit`/`page`, `has_more`                          |
 | `mite_get_time_entry`           | read-only | One time entry by id                                                                                         |
 | `mite_tracker_status`           | read-only | Whether the tracker is running, and on which entry                                                           |
+| `mite_list_customers`           | read-only | Customers, active or archived (`archived: true`)                                                             |
+| `mite_list_projects`            | read-only | Projects with customer and budget, active or archived                                                        |
+| `mite_list_services`            | read-only | Services, active or archived                                                                                 |
+| `mite_list_users`               | read-only | Users and roles (no email, no rates), active or archived                                                     |
 
 More tools (time entries, master data, more reports, writing with confirmation) are planned — see [the architecture decision](docs/adr/0001-architecture.md).
 
