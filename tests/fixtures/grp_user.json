@@ -1,0 +1,16 @@
+[
+  {
+    "time_entry_group": {
+      "minutes": 40325,
+      "time_entries_params": {
+        "at": "this_year",
+        "user_id": "29508"
+      },
+      "revenue": 6720833.3,
+      "user_id": 29508,
+      "user_name": "User 1",
+      "from": "2026-02-11",
+      "to": "2026-09-18"
+    }
+  }
+]

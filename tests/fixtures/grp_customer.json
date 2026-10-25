@@ -1,0 +1,30 @@
+[
+  {
+    "time_entry_group": {
+      "minutes": 40185,
+      "time_entries_params": {
+        "at": "this_year",
+        "customer_id": "890048"
+      },
+      "revenue": 6697500,
+      "customer_id": 890048,
+      "customer_name": "Customer 3",
+      "from": "2026-02-11",
+      "to": "2026-06-12"
+    }
+  },
+  {
+    "time_entry_group": {
+      "minutes": 140,
+      "time_entries_params": {
+        "at": "this_year",
+        "customer_id": "115591"
+      },
+      "revenue": null,
+      "customer_id": 115591,
+      "customer_name": "Customer 7",
+      "from": "2026-09-12",
+      "to": "2026-09-18"
+    }
+  }
+]

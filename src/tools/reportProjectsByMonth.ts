@@ -3,17 +3,20 @@ import { z } from 'zod';
 import type { MiteAccount, MiteTimeEntryGroup } from '../mite/types.js';
 import { defineTool, result } from './definition.js';
 import { periodQuery, periodShape } from './period.js';
+import { groupPeriod } from './periodKey.js';
 
 const idList = z.array(z.number().int().positive()).min(1).optional();
 
-const inputSchema = z.object({
+export const filterShape = {
   ...periodShape,
   customer_id: idList.describe('Only these customers.'),
   project_id: idList.describe('Only these projects.'),
   service_id: idList.describe('Only these services.'),
   user_id: idList.describe('Only these users (needs a key that may see other users).'),
   billable: z.boolean().optional().describe('true = only billable, false = only non-billable.'),
-});
+};
+
+const inputSchema = z.object(filterShape);
 
 export interface ProjectMonthRow {
   month: string;
@@ -31,16 +34,9 @@ export interface ProjectMonthReport {
 
 const round2 = (value: number): number => Math.round(value * 100) / 100;
 
-/** Month of a group as YYYY-MM. mite sends `month: "YYYYMM"`; older shapes carry a start date. */
+/** Month of a group as YYYY-MM. */
 export function groupMonth(group: MiteTimeEntryGroup['time_entry_group']): string {
-  if (typeof group.month === 'string' && /^\d{6}$/.test(group.month)) {
-    return `${group.month.slice(0, 4)}-${group.month.slice(4)}`;
-  }
-  const start = group.time_entries_params?.from ?? group.from;
-  if (typeof start === 'string' && /^\d{4}-\d{2}/.test(start)) {
-    return start.slice(0, 7);
-  }
-  return 'unknown';
+  return groupPeriod(group, 'month');
 }
 
 /** Turns mite's grouped time entries into report rows: minutes → hours, cents → currency units. */

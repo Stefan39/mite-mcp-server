@@ -1,0 +1,13 @@
+[
+  {
+    "time_entry_group": {
+      "minutes": 40325,
+      "time_entries_params": {
+        "from": "2026-01-01",
+        "to": "2026-12-31"
+      },
+      "revenue": 6720833.3,
+      "year": "2026"
+    }
+  }
+]

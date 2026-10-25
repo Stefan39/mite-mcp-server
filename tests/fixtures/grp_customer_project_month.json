@@ -1,0 +1,36 @@
+[
+  {
+    "time_entry_group": {
+      "minutes": 4395,
+      "time_entries_params": {
+        "from": "2026-06-01",
+        "to": "2026-06-30",
+        "customer_id": "890048",
+        "project_id": "4548962"
+      },
+      "revenue": 732500,
+      "customer_id": 890048,
+      "customer_name": "Customer 3",
+      "project_id": 4548962,
+      "project_name": "Project 1",
+      "month": "202606"
+    }
+  },
+  {
+    "time_entry_group": {
+      "minutes": 8865,
+      "time_entries_params": {
+        "from": "2026-05-01",
+        "to": "2026-05-31",
+        "customer_id": "890048",
+        "project_id": "4548962"
+      },
+      "revenue": 1477500,
+      "customer_id": 890048,
+      "customer_name": "Customer 3",
+      "project_id": 4548962,
+      "project_name": "Project 1",
+      "month": "202605"
+    }
+  }
+]

@@ -32,6 +32,7 @@ describe('tool registration', () => {
       'mite_list_services',
       'mite_list_time_entries',
       'mite_list_users',
+      'mite_report',
       'mite_report_projects_by_month',
       'mite_tracker_status',
       'mite_whoami',
@@ -71,6 +72,7 @@ describe('mite_whoami', () => {
         tools: [
           'mite_whoami',
           'mite_report_projects_by_month',
+          'mite_report',
           'mite_list_time_entries',
           'mite_get_time_entry',
           'mite_tracker_status',
