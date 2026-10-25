@@ -34,3 +34,35 @@ export interface MiteTimeEntryGroup {
     [key: string]: unknown;
   };
 }
+
+export interface MiteTimeEntry {
+  time_entry: {
+    id: number;
+    date_at: string;
+    minutes: number;
+    /** Revenue in cents; `null` when no hourly rate applies. */
+    revenue: number | null;
+    billable: boolean;
+    locked: boolean;
+    customer_id: number | null;
+    customer_name: string | null;
+    project_id: number | null;
+    project_name: string | null;
+    service_id: number | null;
+    service_name: string | null;
+    user_id: number;
+    user_name: string;
+    note: string;
+  };
+}
+
+export interface MiteTracker {
+  tracker: {
+    /** Absent while no timer runs: mite then sends `{ "tracker": {} }`. */
+    tracking_time_entry?: {
+      id: number;
+      minutes: number;
+      since: string;
+    };
+  };
+}

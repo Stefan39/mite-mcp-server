@@ -25,7 +25,13 @@ const toolNames = async (cfg = config(), tools = [...allTools, writeTool]): Prom
 
 describe('tool registration', () => {
   it('registers no write tool in read-only mode', async () => {
-    expect(await toolNames()).toEqual(['mite_report_projects_by_month', 'mite_whoami']);
+    expect(await toolNames()).toEqual([
+      'mite_get_time_entry',
+      'mite_list_time_entries',
+      'mite_report_projects_by_month',
+      'mite_tracker_status',
+      'mite_whoami',
+    ]);
   });
 
   it('offers write tools only in write mode', async () => {
@@ -56,7 +62,16 @@ describe('mite_whoami', () => {
     expect(result.structuredContent).toEqual({
       account: { name: 'demo', title: 'Demo GmbH', currency: 'EUR' },
       user: { id: 7, name: 'Stefan', role: 'admin' },
-      server: { mode: 'read-only', tools: ['mite_whoami', 'mite_report_projects_by_month'] },
+      server: {
+        mode: 'read-only',
+        tools: [
+          'mite_whoami',
+          'mite_report_projects_by_month',
+          'mite_list_time_entries',
+          'mite_get_time_entry',
+          'mite_tracker_status',
+        ],
+      },
     });
     expect(JSON.stringify(result)).not.toContain('x@example.com');
   });
