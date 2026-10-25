@@ -8,7 +8,7 @@ import { filterShape } from './reportProjectsByMonth.js';
 
 const ENTITY_KEYS = ['customer', 'project', 'service', 'user'] as const;
 const GROUP_KEYS = [...ENTITY_KEYS, ...PERIOD_KEYS] as const;
-type GroupKey = (typeof GROUP_KEYS)[number];
+export type GroupKey = (typeof GROUP_KEYS)[number];
 
 const inputSchema = z.object({
   group_by: z
@@ -35,7 +35,7 @@ export interface Report {
   total: { hours: number; revenue: number | null };
 }
 
-const round2 = (value: number): number => Math.round(value * 100) / 100;
+export const round2 = (value: number): number => Math.round(value * 100) / 100;
 
 const isPeriodKey = (key: GroupKey): key is PeriodKey =>
   (PERIOD_KEYS as readonly string[]).includes(key);
@@ -65,7 +65,7 @@ export function shares(minutes: number[]): number[] {
   return tenths.map((value) => value / 10);
 }
 
-function keyFields(
+export function keyFields(
   group: MiteTimeEntryGroup['time_entry_group'],
   key: GroupKey,
 ): Record<string, string | number | null> {

@@ -1,0 +1,3 @@
+{
+  "error": "Es ist nicht möglich nach »billable« zu gruppieren. Erlaubt sind nur day, week, month, year, user, customer, project, service und locked."
+}

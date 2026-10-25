@@ -17,18 +17,20 @@ Fragen Sie Claude nach Ihrer [mite](https://mite.de)-Zeiterfassung — „Wie vi
 
 ## Werkzeuge
 
-| Werkzeug                        | Modus     | Funktion                                                                                                                      |
-| ------------------------------- | --------- | ----------------------------------------------------------------------------------------------------------------------------- |
-| `mite_whoami`                   | read-only | Account, eigener Benutzer und Rolle, Servermodus und freigegebene Werkzeuge                                                   |
-| `mite_report_projects_by_month` | read-only | Stunden und Umsatz je Projekt und Monat für einen Zeitraum; Filter nach Kunde, Projekt, Leistung, Benutzer, abrechenbar       |
-| `mite_report`                   | read-only | Stunden, Umsatz und Anteil je 1–3 Gruppierungen (Kunde, Projekt, Leistung, Benutzer, Tag, Woche, Monat, Jahr); gleiche Filter |
-| `mite_list_time_entries`        | read-only | Einzelne Zeiteinträge für einen Zeitraum; Filter, `limit`/`page`, `has_more`                                                  |
-| `mite_get_time_entry`           | read-only | Ein Zeiteintrag nach ID                                                                                                       |
-| `mite_tracker_status`           | read-only | Läuft der Tracker, und auf welchem Eintrag                                                                                    |
-| `mite_list_customers`           | read-only | Kunden, aktiv oder archiviert (`archived: true`)                                                                              |
-| `mite_list_projects`            | read-only | Projekte mit Kunde und Budget, aktiv oder archiviert                                                                          |
-| `mite_list_services`            | read-only | Leistungen, aktiv oder archiviert                                                                                             |
-| `mite_list_users`               | read-only | Benutzer und Rollen (ohne E-Mail, ohne Stundensätze), aktiv oder archiviert                                                   |
+| Werkzeug                        | Modus     | Funktion                                                                                                                                            |
+| ------------------------------- | --------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `mite_whoami`                   | read-only | Account, eigener Benutzer und Rolle, Servermodus und freigegebene Werkzeuge                                                                         |
+| `mite_report_projects_by_month` | read-only | Stunden und Umsatz je Projekt und Monat für einen Zeitraum; Filter nach Kunde, Projekt, Leistung, Benutzer, abrechenbar                             |
+| `mite_report`                   | read-only | Stunden, Umsatz und Anteil je 1–3 Gruppierungen (Kunde, Projekt, Leistung, Benutzer, Tag, Woche, Monat, Jahr); gleiche Filter                       |
+| `mite_report_budget`            | read-only | Budget, Verbrauch, Rest und Prozent verbraucht je Projekt über die gesamte Laufzeit; Minuten in Stunden, Cent in Währungseinheiten                  |
+| `mite_report_billable_ratio`    | read-only | Abrechenbare und nicht abrechenbare Stunden und abrechenbarer Anteil in Prozent für einen Zeitraum, optional je Kunde, Projekt, Benutzer oder Monat |
+| `mite_list_time_entries`        | read-only | Einzelne Zeiteinträge für einen Zeitraum; Filter, `limit`/`page`, `has_more`                                                                        |
+| `mite_get_time_entry`           | read-only | Ein Zeiteintrag nach ID                                                                                                                             |
+| `mite_tracker_status`           | read-only | Läuft der Tracker, und auf welchem Eintrag                                                                                                          |
+| `mite_list_customers`           | read-only | Kunden, aktiv oder archiviert (`archived: true`)                                                                                                    |
+| `mite_list_projects`            | read-only | Projekte mit Kunde und Budget, aktiv oder archiviert                                                                                                |
+| `mite_list_services`            | read-only | Leistungen, aktiv oder archiviert                                                                                                                   |
+| `mite_list_users`               | read-only | Benutzer und Rollen (ohne E-Mail, ohne Stundensätze), aktiv oder archiviert                                                                         |
 
 Weitere Werkzeuge (Zeiteinträge, Stammdaten, weitere Auswertungen, Schreiben mit Bestätigung) sind geplant — siehe [Architekturentscheidung](docs/adr/0001-architecture.md).
 
