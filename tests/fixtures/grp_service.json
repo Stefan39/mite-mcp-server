@@ -1,0 +1,30 @@
+[
+  {
+    "time_entry_group": {
+      "minutes": 40185,
+      "time_entries_params": {
+        "at": "this_year",
+        "service_id": "471169"
+      },
+      "revenue": 6697500,
+      "service_id": 471169,
+      "service_name": "Service 1",
+      "from": "2026-02-11",
+      "to": "2026-06-12"
+    }
+  },
+  {
+    "time_entry_group": {
+      "minutes": 140,
+      "time_entries_params": {
+        "at": "this_year",
+        "service_id": "120244"
+      },
+      "revenue": null,
+      "service_id": 120244,
+      "service_name": "Service 2",
+      "from": "2026-09-12",
+      "to": "2026-09-18"
+    }
+  }
+]

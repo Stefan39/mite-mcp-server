@@ -17,17 +17,18 @@ Ask Claude about your [mite](https://mite.de) time tracking — "How many hours 
 
 ## Tools
 
-| Tool                            | Mode      | What it does                                                                                                 |
-| ------------------------------- | --------- | ------------------------------------------------------------------------------------------------------------ |
-| `mite_whoami`                   | read-only | Account, your user and role, server mode and enabled tools                                                   |
-| `mite_report_projects_by_month` | read-only | Hours and revenue per project and month for a period; filters for customer, project, service, user, billable |
-| `mite_list_time_entries`        | read-only | Single time entries for a period, newest first; filters, `limit`/`page`, `has_more`                          |
-| `mite_get_time_entry`           | read-only | One time entry by id                                                                                         |
-| `mite_tracker_status`           | read-only | Whether the tracker is running, and on which entry                                                           |
-| `mite_list_customers`           | read-only | Customers, active or archived (`archived: true`)                                                             |
-| `mite_list_projects`            | read-only | Projects with customer and budget, active or archived                                                        |
-| `mite_list_services`            | read-only | Services, active or archived                                                                                 |
-| `mite_list_users`               | read-only | Users and roles (no email, no rates), active or archived                                                     |
+| Tool                            | Mode      | What it does                                                                                                        |
+| ------------------------------- | --------- | ------------------------------------------------------------------------------------------------------------------- |
+| `mite_whoami`                   | read-only | Account, your user and role, server mode and enabled tools                                                          |
+| `mite_report_projects_by_month` | read-only | Hours and revenue per project and month for a period; filters for customer, project, service, user, billable        |
+| `mite_report`                   | read-only | Hours, revenue and share per 1–3 groupings (customer, project, service, user, day, week, month, year); same filters |
+| `mite_list_time_entries`        | read-only | Single time entries for a period, newest first; filters, `limit`/`page`, `has_more`                                 |
+| `mite_get_time_entry`           | read-only | One time entry by id                                                                                                |
+| `mite_tracker_status`           | read-only | Whether the tracker is running, and on which entry                                                                  |
+| `mite_list_customers`           | read-only | Customers, active or archived (`archived: true`)                                                                    |
+| `mite_list_projects`            | read-only | Projects with customer and budget, active or archived                                                               |
+| `mite_list_services`            | read-only | Services, active or archived                                                                                        |
+| `mite_list_users`               | read-only | Users and roles (no email, no rates), active or archived                                                            |
 
 More tools (time entries, master data, more reports, writing with confirmation) are planned — see [the architecture decision](docs/adr/0001-architecture.md).
 

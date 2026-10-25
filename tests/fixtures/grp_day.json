@@ -1,0 +1,22 @@
+[
+  {
+    "time_entry_group": {
+      "minutes": 10,
+      "time_entries_params": {
+        "at": "2026-09-18"
+      },
+      "revenue": null,
+      "day": "2026-09-18"
+    }
+  },
+  {
+    "time_entry_group": {
+      "minutes": 60,
+      "time_entries_params": {
+        "at": "2026-09-16"
+      },
+      "revenue": null,
+      "day": "2026-09-16"
+    }
+  }
+]

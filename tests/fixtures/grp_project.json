@@ -1,0 +1,30 @@
+[
+  {
+    "time_entry_group": {
+      "minutes": 40185,
+      "time_entries_params": {
+        "at": "this_year",
+        "project_id": "4548962"
+      },
+      "revenue": 6697500,
+      "project_id": 4548962,
+      "project_name": "Project 1",
+      "from": "2026-02-11",
+      "to": "2026-06-12"
+    }
+  },
+  {
+    "time_entry_group": {
+      "minutes": 140,
+      "time_entries_params": {
+        "at": "this_year",
+        "project_id": "4811858"
+      },
+      "revenue": null,
+      "project_id": 4811858,
+      "project_name": "Project 2",
+      "from": "2026-09-12",
+      "to": "2026-09-18"
+    }
+  }
+]

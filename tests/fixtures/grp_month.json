@@ -1,0 +1,24 @@
+[
+  {
+    "time_entry_group": {
+      "minutes": 140,
+      "time_entries_params": {
+        "from": "2026-09-01",
+        "to": "2026-09-30"
+      },
+      "revenue": null,
+      "month": "202609"
+    }
+  },
+  {
+    "time_entry_group": {
+      "minutes": 4395,
+      "time_entries_params": {
+        "from": "2026-06-01",
+        "to": "2026-06-30"
+      },
+      "revenue": 732500,
+      "month": "202606"
+    }
+  }
+]

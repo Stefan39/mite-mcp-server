@@ -1,0 +1,24 @@
+[
+  {
+    "time_entry_group": {
+      "minutes": 90,
+      "time_entries_params": {
+        "from": "2026-09-14",
+        "to": "2026-09-20"
+      },
+      "revenue": null,
+      "week": "202638"
+    }
+  },
+  {
+    "time_entry_group": {
+      "minutes": 50,
+      "time_entries_params": {
+        "from": "2026-09-07",
+        "to": "2026-09-13"
+      },
+      "revenue": null,
+      "week": "202637"
+    }
+  }
+]

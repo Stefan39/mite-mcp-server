@@ -25,6 +25,10 @@ export interface MiteTimeEntryGroup {
     revenue: number | null;
     /** Present when grouped by month, as `YYYYMM` (e.g. "202606"). */
     month?: string;
+    /** Present when grouped by day (`YYYY-MM-DD`), week (`YYYYWW`) or year (`YYYY`). */
+    day?: string;
+    week?: string;
+    year?: string;
     /** Parameters that list the entries behind this group, including its date range. */
     time_entries_params?: { from?: string; to?: string; [key: string]: unknown };
     /** Documented by mite, but not sent for month groups. Kept as a fallback. */
