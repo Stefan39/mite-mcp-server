@@ -21,6 +21,9 @@ Ask Claude about your [mite](https://mite.de) time tracking — "How many hours 
 | ------------------------------- | --------- | ------------------------------------------------------------------------------------------------------------ |
 | `mite_whoami`                   | read-only | Account, your user and role, server mode and enabled tools                                                   |
 | `mite_report_projects_by_month` | read-only | Hours and revenue per project and month for a period; filters for customer, project, service, user, billable |
+| `mite_list_time_entries`        | read-only | Single time entries for a period, newest first; filters, `limit`/`page`, `has_more`                          |
+| `mite_get_time_entry`           | read-only | One time entry by id                                                                                         |
+| `mite_tracker_status`           | read-only | Whether the tracker is running, and on which entry                                                           |
 
 More tools (time entries, master data, more reports, writing with confirmation) are planned — see [the architecture decision](docs/adr/0001-architecture.md).
 

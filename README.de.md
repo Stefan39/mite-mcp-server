@@ -21,6 +21,9 @@ Fragen Sie Claude nach Ihrer [mite](https://mite.de)-Zeiterfassung — „Wie vi
 | ------------------------------- | --------- | ----------------------------------------------------------------------------------------------------------------------- |
 | `mite_whoami`                   | read-only | Account, eigener Benutzer und Rolle, Servermodus und freigegebene Werkzeuge                                             |
 | `mite_report_projects_by_month` | read-only | Stunden und Umsatz je Projekt und Monat für einen Zeitraum; Filter nach Kunde, Projekt, Leistung, Benutzer, abrechenbar |
+| `mite_list_time_entries`        | read-only | Einzelne Zeiteinträge für einen Zeitraum; Filter, `limit`/`page`, `has_more`                                            |
+| `mite_get_time_entry`           | read-only | Ein Zeiteintrag nach ID                                                                                                 |
+| `mite_tracker_status`           | read-only | Läuft der Tracker, und auf welchem Eintrag                                                                              |
 
 Weitere Werkzeuge (Zeiteinträge, Stammdaten, weitere Auswertungen, Schreiben mit Bestätigung) sind geplant — siehe [Architekturentscheidung](docs/adr/0001-architecture.md).
 
