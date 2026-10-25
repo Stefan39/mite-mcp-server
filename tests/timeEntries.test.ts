@@ -22,11 +22,11 @@ const call = async (
 };
 
 describe('mite_list_time_entries', () => {
-  it('maps rows and reports no further page when fewer than limit+1 came back', async () => {
+  it('maps rows and reports no further page when the page is not full', async () => {
     const { result, requests } = await call(
       { '/time_entries.json': () => json(fixture('time_entries')) },
       'mite_list_time_entries',
-      { limit: 2, project_id: [4811858], billable: false, locked: false },
+      { limit: 3, project_id: [4811858], billable: false, locked: false },
     );
     expect(result.isError).toBeFalsy();
     const data = result.structuredContent as { rows: unknown[]; has_more: boolean };
@@ -57,18 +57,62 @@ describe('mite_list_time_entries', () => {
     expect(query?.get('locked')).toBe('false');
   });
 
-  it('returns at most limit rows and has_more when mite sent one more', async () => {
+  it('reports has_more when a one-entry look-ahead behind a full page finds an entry', async () => {
     const { result, requests } = await call(
       { '/time_entries.json': () => json(fixture('time_entries')) },
       'mite_list_time_entries',
-      { limit: 1, page: 2 },
+      { limit: 2, page: 2 },
     );
-    const data = result.structuredContent as { rows: { id: number }[]; has_more: boolean };
+    const data = result.structuredContent as { rows: unknown[]; has_more: boolean };
+    expect(data.rows).toHaveLength(2);
     expect(data.has_more).toBe(true);
-    expect(data.rows.map((row) => row.id)).toEqual([169895688]);
-    expect(requests[0]?.url.searchParams.get('limit')).toBe('2');
-    expect(requests[0]?.url.searchParams.get('page')).toBe('2');
+    expect(
+      requests.map((r) => [r.url.searchParams.get('limit'), r.url.searchParams.get('page')]),
+    ).toEqual([
+      ['2', '2'],
+      ['1', '5'],
+    ]);
     expect(JSON.stringify(result.content)).toContain('next page');
+  });
+
+  it('pages without gaps or duplicates when mite honours limit and page', async () => {
+    const all = Array.from({ length: 5 }, (_, i) => entry(100 + i));
+    const { fetch } = fakeFetch({
+      '/time_entries.json': (url) => {
+        const limit = Number(url.searchParams.get('limit'));
+        const page = Number(url.searchParams.get('page'));
+        return json(all.slice((page - 1) * limit, page * limit));
+      },
+    });
+    const client = await connect(config(), miteClient(fetch));
+    const ids: number[] = [];
+    const flags: boolean[] = [];
+    for (let page = 1; page <= 3; page++) {
+      const res = await client.callTool({
+        name: 'mite_list_time_entries',
+        arguments: { limit: 2, page },
+      });
+      const data = res.structuredContent as { rows: { id: number }[]; has_more: boolean };
+      ids.push(...data.rows.map((row) => row.id));
+      flags.push(data.has_more);
+    }
+    expect(ids).toEqual([100, 101, 102, 103, 104]);
+    expect(flags).toEqual([true, true, false]);
+  });
+
+  it('reports no further page when the full last page has no successor', async () => {
+    const all = [entry(1), entry(2)];
+    const { fetch, requests } = fakeFetch({
+      '/time_entries.json': (url) => {
+        const limit = Number(url.searchParams.get('limit'));
+        const page = Number(url.searchParams.get('page'));
+        return json(all.slice((page - 1) * limit, page * limit));
+      },
+    });
+    const client = await connect(config(), miteClient(fetch));
+    const res = await client.callTool({ name: 'mite_list_time_entries', arguments: { limit: 2 } });
+    expect((res.structuredContent as { has_more: boolean }).has_more).toBe(false);
+    expect(requests).toHaveLength(2);
   });
 
   it('defaults to 100 entries on page 1', async () => {
@@ -76,7 +120,8 @@ describe('mite_list_time_entries', () => {
       { '/time_entries.json': () => json([]) },
       'mite_list_time_entries',
     );
-    expect(requests[0]?.url.searchParams.get('limit')).toBe('101');
+    expect(requests).toHaveLength(1);
+    expect(requests[0]?.url.searchParams.get('limit')).toBe('100');
     expect(requests[0]?.url.searchParams.get('page')).toBe('1');
   });
 

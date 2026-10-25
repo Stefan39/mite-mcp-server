@@ -42,8 +42,7 @@ export const listTimeEntries = defineTool({
   annotations: { readOnlyHint: true, openWorldHint: true },
   inputSchema,
   handler: async (input, { client }) => {
-    // mite sends no paging info: ask for one entry more to learn whether another page exists.
-    const entries = await client.get<MiteTimeEntry[]>('/time_entries.json', {
+    const query = {
       ...periodQuery(input),
       customer_id: input.customer_id,
       project_id: input.project_id,
@@ -51,11 +50,26 @@ export const listTimeEntries = defineTool({
       user_id: input.user_id,
       billable: input.billable,
       locked: input.locked,
-      limit: input.limit + 1,
-      page: input.page,
-    });
-    const hasMore = entries.length > input.limit;
-    const rows = entries.slice(0, input.limit).map(toRow);
+    };
+    const rows = (
+      await client.get<MiteTimeEntry[]>('/time_entries.json', {
+        ...query,
+        limit: input.limit,
+        page: input.page,
+      })
+    ).map(toRow);
+    // mite sends no paging info and cuts its pages by the requested limit, so the page itself
+    // must keep that limit. A full page is followed by a one-entry page that starts right
+    // behind it (page size 1: page n starts at offset n - 1) to learn whether more exist.
+    let hasMore = false;
+    if (rows.length === input.limit) {
+      const next = await client.get<MiteTimeEntry[]>('/time_entries.json', {
+        ...query,
+        limit: 1,
+        page: input.page * input.limit + 1,
+      });
+      hasMore = next.length > 0;
+    }
     return result(renderEntries(rows, hasMore), { rows, has_more: hasMore });
   },
 });
