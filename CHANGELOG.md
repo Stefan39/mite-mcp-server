@@ -5,6 +5,12 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), ver
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-10-28
+
+### Added
+
+- Elicitation: if the MCP client supports it, every call with a valid `confirm_token` (all `mite_delete_*` tools, and `force: true` on time entries) additionally asks the human with a short summary. Only on accept is the token used and the request sent; decline or cancel executes nothing and leaves the token unused. Clients without elicitation keep the token flow only.
+
 ### Fixed
 
 - `mite_tracker_status`: the text no longer reads as if the entry had been running for its total duration; it says the tracker runs since `since` and the entry now has the given minutes in total. Structured content is unchanged.
@@ -33,5 +39,6 @@ First release. Version numbers 0.1 and 0.2 were milestones that were never tagge
 - Mode `admin`: `mite_update_time_entry` and `mite_delete_time_entry` accept `force: true` to change or delete a locked entry. A call with `force: true` always needs a `confirm_token` (also on update); the first call or `dry_run: true` returns a preview stating that the entry is locked, plus a token. Outside mode `admin` the parameter is not in the input schema, and `force` is never set automatically, not even after a 423.
 - mite API client with polite throttling, retries (reads on 429 and 5xx, writes on 429 only, because mite may have processed a write that answered 5xx) and API-key redaction.
 
-[Unreleased]: https://github.com/Stefan39/mite-mcp-server/compare/v0.3.0...HEAD
+[Unreleased]: https://github.com/Stefan39/mite-mcp-server/compare/v0.4.0...HEAD
+[0.4.0]: https://github.com/Stefan39/mite-mcp-server/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/Stefan39/mite-mcp-server/releases/tag/v0.3.0
