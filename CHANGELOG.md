@@ -5,6 +5,10 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), ver
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-10-28
+
+First release. Version numbers 0.1 and 0.2 were milestones that were never tagged.
+
 ### Added
 
 - MCP server over stdio on the official TypeScript SDK v2.
@@ -22,4 +26,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), ver
 - `mite_delete_time_entry` (mode `write`): deletes a time entry in two steps; the first call (or `dry_run: true`) returns a preview and a `confirm_token` (HMAC-SHA256, valid for 5 minutes, usable once). Locked entries are refused.
 - `mite_create_*`, `mite_update_*` and `mite_delete_*` for customers, projects and services (mode `admin`, one shared factory): create and update support `dry_run`, `archived: true|false` on update archives or restores, delete uses the two-step `confirm_token` flow. A deletion refused by mite is returned as a readable error.
 - Mode `admin`: `mite_update_time_entry` and `mite_delete_time_entry` accept `force: true` to change or delete a locked entry. A call with `force: true` always needs a `confirm_token` (also on update); the first call or `dry_run: true` returns a preview stating that the entry is locked, plus a token. Outside mode `admin` the parameter is not in the input schema, and `force` is never set automatically, not even after a 423.
-- mite API client with polite throttling, retries on 429/5xx and API-key redaction.
+- mite API client with polite throttling, retries (reads on 429 and 5xx, writes on 429 only, because mite may have processed a write that answered 5xx) and API-key redaction.
+
+[Unreleased]: https://github.com/Stefan39/mite-mcp-server/compare/v0.3.0...HEAD
+[0.3.0]: https://github.com/Stefan39/mite-mcp-server/releases/tag/v0.3.0
