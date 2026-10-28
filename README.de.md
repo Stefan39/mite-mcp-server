@@ -17,26 +17,49 @@ Fragen Sie Claude nach Ihrer [mite](https://mite.de)-Zeiterfassung — „Wie vi
 
 ## Werkzeuge
 
-| Werkzeug                        | Modus     | Funktion                                                                                                                                            |
-| ------------------------------- | --------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `mite_whoami`                   | read-only | Account, eigener Benutzer und Rolle, Servermodus und freigegebene Werkzeuge                                                                         |
-| `mite_report_projects_by_month` | read-only | Stunden und Umsatz je Projekt und Monat für einen Zeitraum; Filter nach Kunde, Projekt, Leistung, Benutzer, abrechenbar                             |
-| `mite_report`                   | read-only | Stunden, Umsatz und Anteil je 1–3 Gruppierungen (Kunde, Projekt, Leistung, Benutzer, Tag, Woche, Monat, Jahr); gleiche Filter                       |
-| `mite_report_budget`            | read-only | Budget, Verbrauch, Rest und Prozent verbraucht je Projekt über die gesamte Laufzeit; Minuten in Stunden, Cent in Währungseinheiten                  |
-| `mite_report_billable_ratio`    | read-only | Abrechenbare und nicht abrechenbare Stunden und abrechenbarer Anteil in Prozent für einen Zeitraum, optional je Kunde, Projekt, Benutzer oder Monat |
-| `mite_list_time_entries`        | read-only | Einzelne Zeiteinträge für einen Zeitraum; Filter, `limit`/`page`, `has_more`                                                                        |
-| `mite_get_time_entry`           | read-only | Ein Zeiteintrag nach ID                                                                                                                             |
-| `mite_tracker_status`           | read-only | Läuft der Tracker, und auf welchem Eintrag                                                                                                          |
-| `mite_list_customers`           | read-only | Kunden, aktiv oder archiviert (`archived: true`)                                                                                                    |
-| `mite_list_projects`            | read-only | Projekte mit Kunde und Budget, aktiv oder archiviert                                                                                                |
-| `mite_list_services`            | read-only | Leistungen, aktiv oder archiviert                                                                                                                   |
-| `mite_list_users`               | read-only | Benutzer und Rollen (ohne E-Mail, ohne Stundensätze), aktiv oder archiviert                                                                         |
-| `mite_create_time_entry`        | write     | Legt einen Zeiteintrag an; `dry_run: true` zeigt nur eine Vorschau und schreibt nichts                                                              |
-| `mite_update_time_entry`        | write     | Ändert Felder eines Zeiteintrags (nicht gesperrte); `dry_run: true` zeigt aktuelle und neue Werte und schreibt nichts                               |
-| `mite_start_tracker`            | write     | Startet den Tracker auf einem Zeiteintrag                                                                                                           |
-| `mite_stop_tracker`             | write     | Stoppt den Tracker auf einem Zeiteintrag                                                                                                            |
+| Werkzeug                                                             | Modus     | Funktion                                                                                                                                            |
+| -------------------------------------------------------------------- | --------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `mite_whoami`                                                        | read-only | Account, eigener Benutzer und Rolle, Servermodus und freigegebene Werkzeuge                                                                         |
+| `mite_report_projects_by_month`                                      | read-only | Stunden und Umsatz je Projekt und Monat für einen Zeitraum; Filter nach Kunde, Projekt, Leistung, Benutzer, abrechenbar                             |
+| `mite_report`                                                        | read-only | Stunden, Umsatz und Anteil je 1–3 Gruppierungen (Kunde, Projekt, Leistung, Benutzer, Tag, Woche, Monat, Jahr); gleiche Filter                       |
+| `mite_report_budget`                                                 | read-only | Budget, Verbrauch, Rest und Prozent verbraucht je Projekt über die gesamte Laufzeit; Minuten in Stunden, Cent in Währungseinheiten                  |
+| `mite_report_billable_ratio`                                         | read-only | Abrechenbare und nicht abrechenbare Stunden und abrechenbarer Anteil in Prozent für einen Zeitraum, optional je Kunde, Projekt, Benutzer oder Monat |
+| `mite_list_time_entries`                                             | read-only | Einzelne Zeiteinträge für einen Zeitraum; Filter, `limit`/`page`, `has_more`                                                                        |
+| `mite_get_time_entry`                                                | read-only | Ein Zeiteintrag nach ID                                                                                                                             |
+| `mite_tracker_status`                                                | read-only | Läuft der Tracker, und auf welchem Eintrag                                                                                                          |
+| `mite_list_customers`                                                | read-only | Kunden, aktiv oder archiviert (`archived: true`)                                                                                                    |
+| `mite_list_projects`                                                 | read-only | Projekte mit Kunde und Budget, aktiv oder archiviert                                                                                                |
+| `mite_list_services`                                                 | read-only | Leistungen, aktiv oder archiviert                                                                                                                   |
+| `mite_list_users`                                                    | read-only | Benutzer und Rollen (ohne E-Mail, ohne Stundensätze), aktiv oder archiviert                                                                         |
+| `mite_create_time_entry`                                             | write     | Legt einen Zeiteintrag an; `dry_run: true` zeigt nur eine Vorschau und schreibt nichts                                                              |
+| `mite_update_time_entry`                                             | write     | Ändert Felder eines Zeiteintrags (gesperrte: siehe unten); `dry_run: true` zeigt aktuelle und neue Werte und schreibt nichts                        |
+| `mite_start_tracker`                                                 | write     | Startet den Tracker auf einem Zeiteintrag                                                                                                           |
+| `mite_stop_tracker`                                                  | write     | Stoppt den Tracker auf einem Zeiteintrag                                                                                                            |
+| `mite_delete_time_entry`                                             | write     | Löscht einen Zeiteintrag in zwei Schritten mit Bestätigungs-Token (siehe unten); gesperrte Einträge: siehe „Gesperrte Einträge“                     |
+| `mite_create_customer`, `mite_create_project`, `mite_create_service` | admin     | Legt einen Kunden, ein Projekt oder eine Leistung an; `dry_run: true` zeigt nur eine Vorschau und schreibt nichts                                   |
+| `mite_update_customer`, `mite_update_project`, `mite_update_service` | admin     | Ändert Felder; `archived: true` archiviert, `archived: false` stellt wieder her; `dry_run: true` schreibt nichts                                    |
+| `mite_delete_customer`, `mite_delete_project`, `mite_delete_service` | admin     | Löscht in zwei Schritten mit Bestätigungs-Token (siehe unten); lehnt mite ab, etwa weil noch Zeiteinträge daran hängen, kommt das als Fehler zurück |
 
-Weitere Werkzeuge (Zeiteinträge, Stammdaten, weitere Auswertungen, Schreiben mit Bestätigung) sind geplant — siehe [Architekturentscheidung](docs/adr/0001-architecture.md).
+### Löschen mit Bestätigungs-Token
+
+`mite_delete_time_entry` und die drei Lösch-Werkzeuge für Stammdaten löschen nie beim ersten Aufruf:
+
+1. Mit der `id` aufrufen (oder mit `dry_run: true`). Die Antwort enthält eine Vorschau und ein `confirm_token`; gelöscht wird nichts.
+2. Erneut mit derselben `id` und dem `confirm_token` aufrufen. Erst dann wird gelöscht.
+
+Das Token gilt nur für dieses Werkzeug mit genau diesen Argumenten, 5 Minuten lang und nur einmal. Es ist nur dem laufenden Serverprozess bekannt; ein Neustart macht es ungültig.
+
+Unterstützt der MCP-Client Elicitation, fragt der zweite Aufruf (und jeder Aufruf mit `force: true` und Token) zusätzlich beim Menschen nach, mit einer kurzen Zusammenfassung dessen, was gelöscht oder erzwungen wird. Nur bei Zustimmung wird etwas ausgeführt. Bei Ablehnen oder Abbrechen geht nichts an mite, und das Token bleibt bis zum Ablauf unbenutzt. Clients ohne Elicitation werden nicht gefragt; dann gilt allein das Token.
+
+> **Unterstützung in Clients (geprüft am 28.10.2026):** Claude Desktop bietet Elicitation noch nicht an und zeigt deshalb keinen Dialog; Löschen läuft dort nur über das Token. Sobald ein Client Elicitation anmeldet, greift die zusätzliche Nachfrage ohne neues Release dieses Servers.
+
+### Gesperrte Einträge
+
+Gesperrte Zeiteinträge lassen sich standardmäßig weder ändern noch löschen; mite antwortet mit 423, und das Werkzeug meldet einen „locked“-Fehler. `force` wird nie automatisch gesetzt, auch nicht nach einem 423.
+
+Nur im Modus `admin` akzeptieren `mite_update_time_entry` und `mite_delete_time_entry` zusätzlich `force: true`. Ein Aufruf mit `force: true` braucht immer ein `confirm_token`, auch beim Ändern: Der erste Aufruf (oder `dry_run: true`) liefert eine Vorschau mit dem Hinweis, dass der Eintrag gesperrt ist, und ein Token; erst ein zweiter Aufruf mit denselben Argumenten, `force: true` und dem Token führt aus. In den Modi `read-only` und `write` gibt es den Parameter nicht.
+
+Weitere Werkzeuge (weitere Auswertungen) sind geplant — siehe [Architekturentscheidung](docs/adr/0001-architecture.md).
 
 ## Schnellstart (Claude Desktop)
 
