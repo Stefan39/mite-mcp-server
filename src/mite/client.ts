@@ -50,6 +50,11 @@ export class MiteClient {
     return this.request<T>(method, path, body, {});
   }
 
+  /** Deletes a resource. mite answers with an empty body, so nothing is returned. */
+  async delete(path: string): Promise<void> {
+    await this.write('DELETE', path);
+  }
+
   private async request<T>(
     method: 'GET' | WriteMethod,
     path: string,

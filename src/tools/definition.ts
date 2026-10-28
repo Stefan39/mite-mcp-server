@@ -1,12 +1,14 @@
 import type { CallToolResult, ToolAnnotations } from '@modelcontextprotocol/server';
 import type { z } from 'zod';
 
+import type { ConfirmationTokens } from '../confirm.js';
 import type { Config, Mode } from '../config.js';
 import type { MiteClient } from '../mite/client.js';
 
 export interface ToolContext {
   client: MiteClient;
   config: Config;
+  confirmations: ConfirmationTokens;
   /** Names of all tools registered for this session. */
   enabledTools: readonly string[];
 }

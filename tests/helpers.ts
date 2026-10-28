@@ -2,6 +2,7 @@ import { Client } from '@modelcontextprotocol/client';
 import { InMemoryTransport } from '@modelcontextprotocol/server';
 
 import type { Config } from '../src/config.js';
+import type { ConfirmationTokens } from '../src/confirm.js';
 import { MiteClient } from '../src/mite/client.js';
 import { createServer } from '../src/server.js';
 import type { ToolDefinition } from '../src/tools/definition.js';
@@ -15,7 +16,7 @@ export function config(overrides: Partial<Config> = {}): Config {
 export interface FakeRequest {
   url: URL;
   method: string;
-  body: unknown;
+  body?: unknown;
   headers: Record<string, string>;
 }
 
@@ -73,8 +74,9 @@ export async function connect(
   cfg: Config,
   client: MiteClient,
   tools?: readonly ToolDefinition[],
+  confirmations?: ConfirmationTokens,
 ): Promise<Client> {
-  const server = createServer(cfg, client, tools);
+  const server = createServer(cfg, client, tools, confirmations);
   const [clientTransport, serverTransport] = InMemoryTransport.createLinkedPair();
   await server.connect(serverTransport);
   const mcpClient = new Client({ name: 'test', version: '0.0.0' });

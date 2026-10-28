@@ -1,5 +1,6 @@
 import { createTimeEntry } from './createTimeEntry.js';
 import type { ToolDefinition } from './definition.js';
+import { deleteTimeEntry } from './deleteTimeEntry.js';
 import { getTimeEntry } from './getTimeEntry.js';
 import { listTimeEntries } from './listTimeEntries.js';
 import { listCustomers, listProjects, listServices, listUsers } from './masterData.js';
@@ -21,6 +22,7 @@ export const allTools: readonly ToolDefinition[] = [
   reportBillableRatio,
   listTimeEntries,
   getTimeEntry,
+  deleteTimeEntry,
   trackerStatus,
   listCustomers,
   listProjects,
