@@ -31,8 +31,18 @@ Ask Claude about your [mite](https://mite.de) time tracking — "How many hours 
 | `mite_list_projects`            | read-only | Projects with customer and budget, active or archived                                                                       |
 | `mite_list_services`            | read-only | Services, active or archived                                                                                                |
 | `mite_list_users`               | read-only | Users and roles (no email, no rates), active or archived                                                                    |
+| `mite_delete_time_entry`        | write     | Deletes a time entry in two steps with a confirmation token (see below); locked entries are refused                         |
 
-More tools (time entries, master data, more reports, writing with confirmation) are planned — see [the architecture decision](docs/adr/0001-architecture.md).
+### Deleting with a confirmation token
+
+`mite_delete_time_entry` never deletes on the first call:
+
+1. Call it with the entry `id` (or with `dry_run: true`). It returns a preview of the entry and a `confirm_token`; nothing is deleted.
+2. Call it again with the same `id` and the `confirm_token`. Only then is the entry deleted.
+
+The token is bound to the tool and its arguments, valid for 5 minutes, usable once, and only known to the running server process (a restart invalidates it). Locked entries cannot be deleted; there is no `force` option.
+
+More tools (create/update, master data, more reports) are planned — see [the architecture decision](docs/adr/0001-architecture.md).
 
 ## Quickstart (Claude Desktop)
 

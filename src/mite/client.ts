@@ -40,12 +40,21 @@ export class MiteClient {
   }
 
   async get<T>(path: string, query: Query = {}): Promise<T> {
-    const url = this.buildUrl(path, query);
+    const response = await this.request('GET', this.buildUrl(path, query));
+    return (await response.json()) as T;
+  }
+
+  /** Deletes a resource. mite answers with an empty body, so nothing is returned. */
+  async delete(path: string): Promise<void> {
+    await this.request('DELETE', this.buildUrl(path, {}));
+  }
+
+  private async request(method: 'GET' | 'DELETE', url: URL): Promise<Response> {
     for (let attempt = 1; ; attempt++) {
       await this.throttle();
-      const response = await this.send(url);
+      const response = await this.send(method, url);
       if (response.ok) {
-        return (await response.json()) as T;
+        return response;
       }
       if (!RETRYABLE.has(response.status) || attempt >= this.maxAttempts) {
         throw await this.toError(response);
@@ -63,9 +72,10 @@ export class MiteClient {
     return url;
   }
 
-  private async send(url: URL): Promise<Response> {
+  private async send(method: string, url: URL): Promise<Response> {
     try {
       return await this.fetchFn(url, {
+        method,
         headers: {
           'X-MiteApiKey': this.options.apiKey,
           'User-Agent': this.options.userAgent,
