@@ -31,6 +31,10 @@ Fragen Sie Claude nach Ihrer [mite](https://mite.de)-Zeiterfassung — „Wie vi
 | `mite_list_projects`            | read-only | Projekte mit Kunde und Budget, aktiv oder archiviert                                                                                                |
 | `mite_list_services`            | read-only | Leistungen, aktiv oder archiviert                                                                                                                   |
 | `mite_list_users`               | read-only | Benutzer und Rollen (ohne E-Mail, ohne Stundensätze), aktiv oder archiviert                                                                         |
+| `mite_create_time_entry`        | write     | Legt einen Zeiteintrag an; `dry_run: true` zeigt nur eine Vorschau und schreibt nichts                                                              |
+| `mite_update_time_entry`        | write     | Ändert Felder eines Zeiteintrags (nicht gesperrte); `dry_run: true` zeigt aktuelle und neue Werte und schreibt nichts                               |
+| `mite_start_tracker`            | write     | Startet den Tracker auf einem Zeiteintrag                                                                                                           |
+| `mite_stop_tracker`             | write     | Stoppt den Tracker auf einem Zeiteintrag                                                                                                            |
 
 Weitere Werkzeuge (Zeiteinträge, Stammdaten, weitere Auswertungen, Schreiben mit Bestätigung) sind geplant — siehe [Architekturentscheidung](docs/adr/0001-architecture.md).
 

@@ -14,6 +14,8 @@ export function config(overrides: Partial<Config> = {}): Config {
 
 export interface FakeRequest {
   url: URL;
+  method: string;
+  body: unknown;
   headers: Record<string, string>;
 }
 
@@ -37,7 +39,12 @@ export function fakeFetch(routes: Record<string, Route | Route[]>): {
   );
   const fetchFn = (input: string | URL | Request, init?: RequestInit): Promise<Response> => {
     const url = new URL(input instanceof Request ? input.url : input);
-    requests.push({ url, headers: { ...(init?.headers as Record<string, string>) } });
+    requests.push({
+      url,
+      method: init?.method ?? 'GET',
+      body: typeof init?.body === 'string' ? JSON.parse(init.body) : undefined,
+      headers: { ...(init?.headers as Record<string, string>) },
+    });
     const route = queues.get(url.pathname);
     if (route === undefined) {
       return Promise.resolve(json({ error: 'not found' }, 404));

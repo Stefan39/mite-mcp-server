@@ -18,4 +18,5 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), ver
 - `mite_get_time_entry`: one time entry by id.
 - `mite_tracker_status`: whether the mite tracker is running, and on which time entry.
 - `mite_list_customers`, `mite_list_projects`, `mite_list_services`, `mite_list_users`: master data, active or archived (`archived: true`); no email or hourly rates.
+- `mite_create_time_entry`, `mite_update_time_entry` (both with `dry_run`), `mite_start_tracker`, `mite_stop_tracker`: write tools in mode `write`, no confirmation token. Updating a locked entry fails with a clear error.
 - mite API client with polite throttling, retries on 429/5xx and API-key redaction.

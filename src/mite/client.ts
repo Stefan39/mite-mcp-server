@@ -16,6 +16,8 @@ export interface MiteClientOptions {
   timeoutMs?: number;
 }
 
+export type WriteMethod = 'POST' | 'PATCH' | 'DELETE';
+
 const RETRYABLE = new Set([429, 500, 502, 503, 504]);
 
 const defaultSleep = (ms: number): Promise<void> =>
@@ -40,14 +42,30 @@ export class MiteClient {
   }
 
   async get<T>(path: string, query: Query = {}): Promise<T> {
+    return this.request<T>('GET', path, undefined, query);
+  }
+
+  /** Sends one write request. Only 429 is retried: mite has not processed such a request, a 5xx may have. */
+  async write<T>(method: WriteMethod, path: string, body?: unknown): Promise<T | undefined> {
+    return this.request<T>(method, path, body, {});
+  }
+
+  private async request<T>(
+    method: 'GET' | WriteMethod,
+    path: string,
+    body: unknown,
+    query: Query,
+  ): Promise<T> {
     const url = this.buildUrl(path, query);
+    const retryable = method === 'GET' ? RETRYABLE : new Set([429]);
     for (let attempt = 1; ; attempt++) {
       await this.throttle();
-      const response = await this.send(url);
+      const response = await this.send(url, method, body);
       if (response.ok) {
-        return (await response.json()) as T;
+        const text = await response.text();
+        return (text.trim() === '' ? undefined : JSON.parse(text)) as T;
       }
-      if (!RETRYABLE.has(response.status) || attempt >= this.maxAttempts) {
+      if (!retryable.has(response.status) || attempt >= this.maxAttempts) {
         throw await this.toError(response);
       }
       await this.sleep(this.retryDelay(response, attempt));
@@ -63,14 +81,17 @@ export class MiteClient {
     return url;
   }
 
-  private async send(url: URL): Promise<Response> {
+  private async send(url: URL, method: string, body: unknown): Promise<Response> {
     try {
       return await this.fetchFn(url, {
+        method,
         headers: {
           'X-MiteApiKey': this.options.apiKey,
           'User-Agent': this.options.userAgent,
           Accept: 'application/json',
+          ...(body === undefined ? {} : { 'Content-Type': 'application/json' }),
         },
+        ...(body === undefined ? {} : { body: JSON.stringify(body) }),
         signal: AbortSignal.timeout(this.timeoutMs),
       });
     } catch (error) {
