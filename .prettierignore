@@ -2,3 +2,7 @@ dist
 coverage
 node_modules
 package-lock.json
+
+# Working files of the dev pipeline runner, never committed
+TASK.md
+RESULT.json
