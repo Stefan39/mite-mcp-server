@@ -17,36 +17,39 @@ Ask Claude about your [mite](https://mite.de) time tracking — "How many hours 
 
 ## Tools
 
-| Tool                            | Mode      | What it does                                                                                                                |
-| ------------------------------- | --------- | --------------------------------------------------------------------------------------------------------------------------- |
-| `mite_whoami`                   | read-only | Account, your user and role, server mode and enabled tools                                                                  |
-| `mite_report_projects_by_month` | read-only | Hours and revenue per project and month for a period; filters for customer, project, service, user, billable                |
-| `mite_report`                   | read-only | Hours, revenue and share per 1–3 groupings (customer, project, service, user, day, week, month, year); same filters         |
-| `mite_report_budget`            | read-only | Budget, consumption, remaining and percent used per project over its whole life; minutes in hours, cents in currency units  |
-| `mite_report_billable_ratio`    | read-only | Billable and non-billable hours and billable share in percent for a period, optionally per customer, project, user or month |
-| `mite_list_time_entries`        | read-only | Single time entries for a period, newest first; filters, `limit`/`page`, `has_more`                                         |
-| `mite_get_time_entry`           | read-only | One time entry by id                                                                                                        |
-| `mite_tracker_status`           | read-only | Whether the tracker is running, and on which entry                                                                          |
-| `mite_list_customers`           | read-only | Customers, active or archived (`archived: true`)                                                                            |
-| `mite_list_projects`            | read-only | Projects with customer and budget, active or archived                                                                       |
-| `mite_list_services`            | read-only | Services, active or archived                                                                                                |
-| `mite_list_users`               | read-only | Users and roles (no email, no rates), active or archived                                                                    |
-| `mite_create_time_entry`        | write     | Creates a time entry; `dry_run: true` shows a preview and writes nothing                                                    |
-| `mite_update_time_entry`        | write     | Changes fields of a time entry (not locked ones); `dry_run: true` shows current vs. new values and writes nothing           |
-| `mite_start_tracker`            | write     | Starts the tracker on a time entry                                                                                          |
-| `mite_stop_tracker`             | write     | Stops the tracker on a time entry                                                                                           |
-| `mite_delete_time_entry`        | write     | Deletes a time entry in two steps with a confirmation token (see below); locked entries are refused                         |
+| Tool                                                                 | Mode      | What it does                                                                                                                       |
+| -------------------------------------------------------------------- | --------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| `mite_whoami`                                                        | read-only | Account, your user and role, server mode and enabled tools                                                                         |
+| `mite_report_projects_by_month`                                      | read-only | Hours and revenue per project and month for a period; filters for customer, project, service, user, billable                       |
+| `mite_report`                                                        | read-only | Hours, revenue and share per 1–3 groupings (customer, project, service, user, day, week, month, year); same filters                |
+| `mite_report_budget`                                                 | read-only | Budget, consumption, remaining and percent used per project over its whole life; minutes in hours, cents in currency units         |
+| `mite_report_billable_ratio`                                         | read-only | Billable and non-billable hours and billable share in percent for a period, optionally per customer, project, user or month        |
+| `mite_list_time_entries`                                             | read-only | Single time entries for a period, newest first; filters, `limit`/`page`, `has_more`                                                |
+| `mite_get_time_entry`                                                | read-only | One time entry by id                                                                                                               |
+| `mite_tracker_status`                                                | read-only | Whether the tracker is running, and on which entry                                                                                 |
+| `mite_list_customers`                                                | read-only | Customers, active or archived (`archived: true`)                                                                                   |
+| `mite_list_projects`                                                 | read-only | Projects with customer and budget, active or archived                                                                              |
+| `mite_list_services`                                                 | read-only | Services, active or archived                                                                                                       |
+| `mite_list_users`                                                    | read-only | Users and roles (no email, no rates), active or archived                                                                           |
+| `mite_create_time_entry`                                             | write     | Creates a time entry; `dry_run: true` shows a preview and writes nothing                                                           |
+| `mite_update_time_entry`                                             | write     | Changes fields of a time entry (not locked ones); `dry_run: true` shows current vs. new values and writes nothing                  |
+| `mite_start_tracker`                                                 | write     | Starts the tracker on a time entry                                                                                                 |
+| `mite_stop_tracker`                                                  | write     | Stops the tracker on a time entry                                                                                                  |
+| `mite_delete_time_entry`                                             | write     | Deletes a time entry in two steps with a confirmation token (see below); locked entries are refused                                |
+| `mite_create_customer`, `mite_create_project`, `mite_create_service` | admin     | Creates a customer, project or service; `dry_run: true` shows a preview and writes nothing                                         |
+| `mite_update_customer`, `mite_update_project`, `mite_update_service` | admin     | Changes fields; `archived: true` archives, `archived: false` restores; `dry_run: true` writes nothing                              |
+| `mite_delete_customer`, `mite_delete_project`, `mite_delete_service` | admin     | Deletes in two steps with a confirmation token (see below); mite's refusal, e.g. while time entries exist, is returned as an error |
 
 ### Deleting with a confirmation token
 
-`mite_delete_time_entry` never deletes on the first call:
+`mite_delete_time_entry` and the three master data delete tools never delete on the first call:
 
-1. Call it with the entry `id` (or with `dry_run: true`). It returns a preview of the entry and a `confirm_token`; nothing is deleted.
-2. Call it again with the same `id` and the `confirm_token`. Only then is the entry deleted.
+1. Call it with the `id` (or with `dry_run: true`). It returns a preview of the entry and a `confirm_token`; nothing is deleted.
+2. Call it again with the same `id` and the `confirm_token`. Only then is it deleted.
 
 The token is bound to the tool and its arguments, valid for 5 minutes, usable once, and only known to the running server process (a restart invalidates it). Locked entries cannot be deleted; there is no `force` option.
 
-More tools (create/update, master data, more reports) are planned — see [the architecture decision](docs/adr/0001-architecture.md).
+More tools (more reports) are planned — see [the architecture decision](docs/adr/0001-architecture.md).
 
 ## Quickstart (Claude Desktop)
 

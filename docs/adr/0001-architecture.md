@@ -27,7 +27,7 @@ Tool names are prefixed with `mite_` and use snake_case. Every tool sets MCP ann
 | Reports (aggregated on the mite server) | read-only | `mite_report_projects_by_month` ✅, `mite_report` (generic `group_by`), `mite_report_budget`, `mite_report_billable_ratio`                                                                   |
 | Read                                    | read-only | `mite_list_time_entries` (default limit 100, `has_more`), `mite_get_time_entry`, `mite_list_customers`, `mite_list_projects`, `mite_list_services`, `mite_list_users`, `mite_tracker_status` |
 | Write                                   | write     | `mite_create_time_entry`, `mite_update_time_entry`, `mite_delete_time_entry` ✅ (confirmation), `mite_start_tracker`, `mite_stop_tracker`                                                    |
-| Master data                             | admin     | create, update and archive customers, projects and services; delete only with confirmation                                                                                                   |
+| Master data                             | admin     | create, update and archive customers, projects and services; delete only with confirmation ✅                                                                                                |
 
 ✅ = implemented. Bookmarks, the changes feed and user management are out of scope for 0.x.
 

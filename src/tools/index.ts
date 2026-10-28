@@ -4,6 +4,17 @@ import { deleteTimeEntry } from './deleteTimeEntry.js';
 import { getTimeEntry } from './getTimeEntry.js';
 import { listTimeEntries } from './listTimeEntries.js';
 import { listCustomers, listProjects, listServices, listUsers } from './masterData.js';
+import {
+  createCustomer,
+  createProject,
+  createService,
+  deleteCustomer,
+  deleteProject,
+  deleteService,
+  updateCustomer,
+  updateProject,
+  updateService,
+} from './masterDataWrite.js';
 import { report } from './report.js';
 import { reportBillableRatio } from './reportBillableRatio.js';
 import { reportBudget } from './reportBudget.js';
@@ -32,4 +43,13 @@ export const allTools: readonly ToolDefinition[] = [
   updateTimeEntry,
   startTracker,
   stopTracker,
+  createCustomer,
+  updateCustomer,
+  deleteCustomer,
+  createProject,
+  updateProject,
+  deleteProject,
+  createService,
+  updateService,
+  deleteService,
 ];

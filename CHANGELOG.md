@@ -20,4 +20,5 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), ver
 - `mite_list_customers`, `mite_list_projects`, `mite_list_services`, `mite_list_users`: master data, active or archived (`archived: true`); no email or hourly rates.
 - `mite_create_time_entry`, `mite_update_time_entry` (both with `dry_run`), `mite_start_tracker`, `mite_stop_tracker`: write tools in mode `write`, no confirmation token. Updating a locked entry fails with a clear error.
 - `mite_delete_time_entry` (mode `write`): deletes a time entry in two steps; the first call (or `dry_run: true`) returns a preview and a `confirm_token` (HMAC-SHA256, valid for 5 minutes, usable once). Locked entries are refused.
+- `mite_create_*`, `mite_update_*` and `mite_delete_*` for customers, projects and services (mode `admin`, one shared factory): create and update support `dry_run`, `archived: true|false` on update archives or restores, delete uses the two-step `confirm_token` flow. A deletion refused by mite is returned as a readable error.
 - mite API client with polite throttling, retries on 429/5xx and API-key redaction.
