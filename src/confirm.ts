@@ -39,22 +39,33 @@ export class ConfirmationTokens {
 
   /** True exactly once for a valid, unexpired token issued for this tool and these arguments. */
   consume(tool: string, args: Record<string, unknown>, token: string): boolean {
+    const signature = this.verify(tool, args, token);
+    if (signature === undefined) return false;
+    this.used.set(signature, Number(token.split('.')[0]));
+    return true;
+  }
+
+  /** Like {@link consume}, but leaves the token unused, e.g. while the human is still being asked. */
+  check(tool: string, args: Record<string, unknown>, token: string): boolean {
+    return this.verify(tool, args, token) !== undefined;
+  }
+
+  private verify(tool: string, args: Record<string, unknown>, token: string): string | undefined {
     this.prune();
     const [expiry, signature, ...rest] = token.split('.');
     const expiresAt = Number(expiry);
     if (signature === undefined || rest.length > 0 || !Number.isSafeInteger(expiresAt)) {
-      return false;
+      return undefined;
     }
     if (expiresAt <= this.now() || this.used.has(signature)) {
-      return false;
+      return undefined;
     }
     const expected = Buffer.from(this.sign(tool, args, expiresAt));
     const actual = Buffer.from(signature);
     if (expected.length !== actual.length || !timingSafeEqual(expected, actual)) {
-      return false;
+      return undefined;
     }
-    this.used.set(signature, expiresAt);
-    return true;
+    return signature;
   }
 
   private sign(tool: string, args: Record<string, unknown>, expiresAt: number): string {

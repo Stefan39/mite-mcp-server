@@ -70,16 +70,28 @@ export function miteClient(fetchFn: typeof fetch): MiteClient {
   });
 }
 
+/** How a mocked client answers an elicitation request; giving one makes it announce the capability. */
+export type ElicitAnswer = (message: string) => 'accept' | 'decline' | 'cancel';
+
 export async function connect(
   cfg: Config,
   client: MiteClient,
   tools?: readonly ToolDefinition[],
   confirmations?: ConfirmationTokens,
+  answer?: ElicitAnswer,
 ): Promise<Client> {
   const server = createServer(cfg, client, tools, confirmations);
   const [clientTransport, serverTransport] = InMemoryTransport.createLinkedPair();
   await server.connect(serverTransport);
-  const mcpClient = new Client({ name: 'test', version: '0.0.0' });
+  const mcpClient = new Client(
+    { name: 'test', version: '0.0.0' },
+    answer === undefined ? undefined : { capabilities: { elicitation: { form: {} } } },
+  );
+  if (answer !== undefined) {
+    mcpClient.setRequestHandler('elicitation/create', (request) => ({
+      action: answer(request.params.message),
+    }));
+  }
   await mcpClient.connect(clientTransport);
   return mcpClient;
 }

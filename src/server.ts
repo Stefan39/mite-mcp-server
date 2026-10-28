@@ -3,6 +3,7 @@ import { McpServer } from '@modelcontextprotocol/server';
 
 import type { Config } from './config.js';
 import { ConfirmationTokens } from './confirm.js';
+import { elicitFrom } from './elicit.js';
 import { selectTools } from './guard.js';
 import type { MiteClient } from './mite/client.js';
 import { redact } from './redact.js';
@@ -33,6 +34,7 @@ export function createServer(
     client,
     config,
     confirmations,
+    elicit: elicitFrom(server),
     enabledTools: selected.map((tool) => tool.name),
   };
 
