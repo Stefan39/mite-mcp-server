@@ -23,7 +23,7 @@ export const trackerStatus = defineTool({
       since: running.since,
     };
     return result(
-      `The tracker is running on time entry ${data.time_entry_id} since ${data.since} (${data.minutes} min).`,
+      `The tracker is running on time entry ${data.time_entry_id} since ${data.since}; the entry now has ${data.minutes} min in total.`,
       data,
     );
   },

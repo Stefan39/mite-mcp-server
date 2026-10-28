@@ -197,3 +197,22 @@ describe('master data write tools', () => {
     });
   });
 });
+
+describe('update messages', () => {
+  const text = (result: { content?: unknown }): string =>
+    (result.content as { text: string }[])[0]?.text ?? '';
+
+  it('name the new value, so archiving and restoring differ', async () => {
+    const { call } = await setup('projects', 'project');
+    const archived = text(await call('mite_update_project', { id: 5, archived: true }));
+    const restored = text(await call('mite_update_project', { id: 5, archived: false }));
+    expect(archived).toBe('Project 5 updated: archived = true (archived).');
+    expect(restored).toBe('Project 5 updated: archived = false (restored).');
+  });
+
+  it('shorten a long note to 80 characters', async () => {
+    const { call } = await setup('projects', 'project');
+    const message = text(await call('mite_update_project', { id: 5, note: 'x'.repeat(200) }));
+    expect(message).toBe(`Project 5 updated: note = "${'x'.repeat(80)}…".`);
+  });
+});

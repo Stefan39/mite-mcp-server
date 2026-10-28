@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 import { MiteApiError } from '../errors.js';
 import { defineTool, result } from './definition.js';
-import { dryRun } from './writeFields.js';
+import { describeChange, dryRun } from './writeFields.js';
 
 const NOTE = z.string().max(10_000).describe('Note.');
 const NAME = z.string().min(1).max(255).describe('Name.');
@@ -106,11 +106,16 @@ function defineMasterDataWriteTools(spec: MasterDataWriteSpec) {
       } catch (error) {
         throw readable(entity, id, 'changed', error);
       }
-      return result(`${capitalise(entity)} ${id} updated: ${Object.keys(changes).join(', ')}.`, {
-        dry_run: false,
-        id,
-        updated: Object.keys(changes),
-      });
+      return result(
+        `${capitalise(entity)} ${id} updated: ${Object.entries(changes)
+          .map(([field, value]) => describeChange(field, value))
+          .join(', ')}.`,
+        {
+          dry_run: false,
+          id,
+          updated: Object.keys(changes),
+        },
+      );
     },
   });
 

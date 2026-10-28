@@ -235,3 +235,24 @@ describe('mite_tracker_status', () => {
     });
   });
 });
+
+describe('mite_tracker_status text', () => {
+  it('says the minutes are the total of the entry', async () => {
+    const { result } = await call(
+      { '/tracker.json': () => json(fixture('tracker_running')) },
+      'mite_tracker_status',
+    );
+    expect(result.content).toEqual([
+      {
+        type: 'text',
+        text: 'The tracker is running on time entry 169895688 since 2026-10-25T15:40:00+01:00; the entry now has 12 min in total.',
+      },
+    ]);
+    expect(result.structuredContent).toEqual({
+      running: true,
+      time_entry_id: 169895688,
+      minutes: 12,
+      since: '2026-10-25T15:40:00+01:00',
+    });
+  });
+});
