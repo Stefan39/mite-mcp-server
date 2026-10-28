@@ -31,6 +31,10 @@ Ask Claude about your [mite](https://mite.de) time tracking — "How many hours 
 | `mite_list_projects`            | read-only | Projects with customer and budget, active or archived                                                                       |
 | `mite_list_services`            | read-only | Services, active or archived                                                                                                |
 | `mite_list_users`               | read-only | Users and roles (no email, no rates), active or archived                                                                    |
+| `mite_create_time_entry`        | write     | Creates a time entry; `dry_run: true` shows a preview and writes nothing                                                    |
+| `mite_update_time_entry`        | write     | Changes fields of a time entry (not locked ones); `dry_run: true` shows current vs. new values and writes nothing           |
+| `mite_start_tracker`            | write     | Starts the tracker on a time entry                                                                                          |
+| `mite_stop_tracker`             | write     | Stops the tracker on a time entry                                                                                           |
 | `mite_delete_time_entry`        | write     | Deletes a time entry in two steps with a confirmation token (see below); locked entries are refused                         |
 
 ### Deleting with a confirmation token
