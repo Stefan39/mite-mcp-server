@@ -42,7 +42,8 @@ export function createServer(
       {
         title: tool.title,
         description: tool.description,
-        inputSchema: tool.inputSchema,
+        inputSchema:
+          config.mode === 'admin' ? (tool.adminInputSchema ?? tool.inputSchema) : tool.inputSchema,
         annotations: tool.annotations,
       },
       async (input: unknown) => {
