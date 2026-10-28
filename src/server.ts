@@ -2,6 +2,7 @@ import type { CallToolResult } from '@modelcontextprotocol/server';
 import { McpServer } from '@modelcontextprotocol/server';
 
 import type { Config } from './config.js';
+import { ConfirmationTokens } from './confirm.js';
 import { selectTools } from './guard.js';
 import type { MiteClient } from './mite/client.js';
 import { redact } from './redact.js';
@@ -21,13 +22,19 @@ export function createServer(
   config: Config,
   client: MiteClient,
   tools: readonly ToolDefinition[] = allTools,
+  confirmations: ConfirmationTokens = new ConfirmationTokens(),
 ): McpServer {
   const server = new McpServer(
     { name: 'mite-mcp-server', version: VERSION },
     { capabilities: { tools: {} } },
   );
   const selected = selectTools(tools, config);
-  const context = { client, config, enabledTools: selected.map((tool) => tool.name) };
+  const context = {
+    client,
+    config,
+    confirmations,
+    enabledTools: selected.map((tool) => tool.name),
+  };
 
   for (const tool of selected) {
     server.registerTool(

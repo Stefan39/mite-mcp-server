@@ -2,6 +2,7 @@ import { Client } from '@modelcontextprotocol/client';
 import { InMemoryTransport } from '@modelcontextprotocol/server';
 
 import type { Config } from '../src/config.js';
+import type { ConfirmationTokens } from '../src/confirm.js';
 import { MiteClient } from '../src/mite/client.js';
 import { createServer } from '../src/server.js';
 import type { ToolDefinition } from '../src/tools/definition.js';
@@ -13,6 +14,7 @@ export function config(overrides: Partial<Config> = {}): Config {
 }
 
 export interface FakeRequest {
+  method: string;
   url: URL;
   headers: Record<string, string>;
 }
@@ -37,7 +39,11 @@ export function fakeFetch(routes: Record<string, Route | Route[]>): {
   );
   const fetchFn = (input: string | URL | Request, init?: RequestInit): Promise<Response> => {
     const url = new URL(input instanceof Request ? input.url : input);
-    requests.push({ url, headers: { ...(init?.headers as Record<string, string>) } });
+    requests.push({
+      method: init?.method ?? 'GET',
+      url,
+      headers: { ...(init?.headers as Record<string, string>) },
+    });
     const route = queues.get(url.pathname);
     if (route === undefined) {
       return Promise.resolve(json({ error: 'not found' }, 404));
@@ -66,8 +72,9 @@ export async function connect(
   cfg: Config,
   client: MiteClient,
   tools?: readonly ToolDefinition[],
+  confirmations?: ConfirmationTokens,
 ): Promise<Client> {
-  const server = createServer(cfg, client, tools);
+  const server = createServer(cfg, client, tools, confirmations);
   const [clientTransport, serverTransport] = InMemoryTransport.createLinkedPair();
   await server.connect(serverTransport);
   const mcpClient = new Client({ name: 'test', version: '0.0.0' });
