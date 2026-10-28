@@ -16,7 +16,10 @@ const ENTRY = {
   billable: true,
 };
 
-const setup = async (answer?: ElicitAnswer) => {
+const setup = async (
+  answer?: ElicitAnswer,
+  elicitation?: { form?: Record<string, never>; url?: Record<string, never> },
+) => {
   const { fetch, requests } = fakeFetch({
     '/time_entries/5.json': () => json({ time_entry: ENTRY }),
     '/customers/5.json': () => json({ customer: { id: 5, name: 'Acme' } }),
@@ -33,6 +36,7 @@ const setup = async (answer?: ElicitAnswer) => {
           asked.push(message);
           return answer(message);
         },
+    elicitation,
   );
   const writes = () => requests.filter((r) => r.method !== 'GET');
   const token = async (name: string, args: Record<string, unknown>): Promise<string> =>
@@ -102,6 +106,15 @@ describe.each(cases)('elicitation for $name', ({ name, args, method }) => {
     const confirm_token = await token(name, args);
     const result = await client.callTool({ name, arguments: { ...args, confirm_token } });
     expect(result.isError).toBeFalsy();
+    expect(writes().map((r) => r.method)).toEqual([method]);
+  });
+
+  it('works with the token alone if the client only announces url elicitation', async () => {
+    const { client, asked, writes, token } = await setup(() => 'accept', { url: {} });
+    const confirm_token = await token(name, args);
+    const result = await client.callTool({ name, arguments: { ...args, confirm_token } });
+    expect(result.isError).toBeFalsy();
+    expect(asked).toHaveLength(0);
     expect(writes().map((r) => r.method)).toEqual([method]);
   });
 });

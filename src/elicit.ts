@@ -3,12 +3,13 @@ import type { McpServer } from '@modelcontextprotocol/server';
 /** Asks the human a yes/no question; `undefined` if the client cannot be asked via elicitation. */
 export type Elicit = (message: string) => Promise<'accept' | 'decline' | 'cancel' | undefined>;
 
-/** Builds an {@link Elicit} bound to the connected client; it only asks if the client announced elicitation. */
+/** Builds an {@link Elicit} bound to the connected client; it only asks if the client announced form elicitation. */
 export function elicitFrom(server: McpServer): Elicit {
   // The deprecated push-style accessors are the only ones that work on the stdio (2025-era) connection used here.
   /* eslint-disable @typescript-eslint/no-deprecated */
   return async (message) => {
-    if (server.server.getClientCapabilities()?.elicitation === undefined) return undefined;
+    // Form mode is what we ask in; a client announcing only `url` elicitation stays on the token-only flow.
+    if (server.server.getClientCapabilities()?.elicitation?.form === undefined) return undefined;
     const answer = await server.server.elicitInput({
       mode: 'form',
       message,

@@ -79,13 +79,14 @@ export async function connect(
   tools?: readonly ToolDefinition[],
   confirmations?: ConfirmationTokens,
   answer?: ElicitAnswer,
+  elicitation: { form?: Record<string, never>; url?: Record<string, never> } = { form: {} },
 ): Promise<Client> {
   const server = createServer(cfg, client, tools, confirmations);
   const [clientTransport, serverTransport] = InMemoryTransport.createLinkedPair();
   await server.connect(serverTransport);
   const mcpClient = new Client(
     { name: 'test', version: '0.0.0' },
-    answer === undefined ? undefined : { capabilities: { elicitation: { form: {} } } },
+    answer === undefined ? undefined : { capabilities: { elicitation } },
   );
   if (answer !== undefined) {
     mcpClient.setRequestHandler('elicitation/create', (request) => ({
