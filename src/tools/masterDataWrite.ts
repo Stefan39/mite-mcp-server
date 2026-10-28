@@ -1,5 +1,6 @@
 import { z } from 'zod';
 
+import { askHuman } from '../elicit.js';
 import { MiteApiError } from '../errors.js';
 import { defineTool, result } from './definition.js';
 import { describeChange, dryRun } from './writeFields.js';
@@ -141,7 +142,7 @@ function defineMasterDataWriteTools(spec: MasterDataWriteSpec) {
         .describe('Token from the preview call. Omit it to get a preview.'),
       dry_run: z.boolean().optional().describe('Only preview, even if a token is given.'),
     }),
-    handler: async (input, { client, confirmations }) => {
+    handler: async (input, { client, confirmations, elicit }) => {
       const { id, confirm_token: token, dry_run: preview } = input;
       if (token === undefined || preview === true) {
         let record: Record<string, { name?: string }>;
@@ -161,11 +162,13 @@ function defineMasterDataWriteTools(spec: MasterDataWriteSpec) {
           { deleted: false, id, name: name ?? null, confirm_token: confirmToken },
         );
       }
-      if (!confirmations.consume(deleteName, input, token)) {
-        throw new Error(
+      const invalid = (): Error =>
+        new Error(
           `confirm_token is invalid, expired, already used or was issued for other arguments; nothing deleted. Call ${deleteName} without confirm_token to get a new preview.`,
         );
-      }
+      if (!confirmations.check(deleteName, input, token)) throw invalid();
+      await askHuman(elicit, `Delete ${entity} ${id}?`, 'nothing deleted');
+      if (!confirmations.consume(deleteName, input, token)) throw invalid();
       try {
         await client.delete(`/${resource}/${id}.json`);
       } catch (error) {

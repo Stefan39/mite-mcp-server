@@ -1,5 +1,6 @@
 import { z } from 'zod';
 
+import { askHuman } from '../elicit.js';
 import { MiteApiError } from '../errors.js';
 import type { MiteTimeEntry } from '../mite/types.js';
 import { defineTool, result } from './definition.js';
@@ -55,7 +56,7 @@ export const updateTimeEntry = defineTool({
   },
   inputSchema,
   adminInputSchema,
-  handler: async (input, { client, config, confirmations }) => {
+  handler: async (input, { client, config, confirmations, elicit }) => {
     const {
       id,
       dry_run,
@@ -104,10 +105,18 @@ export const updateTimeEntry = defineTool({
         },
       );
     }
-    if (forced && (token === undefined || !confirmations.consume(NAME, tokenArguments, token))) {
-      throw new Error(
-        `confirm_token is invalid, expired, already used or was issued for other arguments; nothing written. Call ${NAME} with force: true and without confirm_token to get a new preview.`,
+    if (forced) {
+      const invalid = (): Error =>
+        new Error(
+          `confirm_token is invalid, expired, already used or was issued for other arguments; nothing written. Call ${NAME} with force: true and without confirm_token to get a new preview.`,
+        );
+      if (token === undefined || !confirmations.check(NAME, tokenArguments, token)) throw invalid();
+      await askHuman(
+        elicit,
+        `Change locked time entry ${id} (force): ${changes.map(([field, value]) => describeChange(field, value)).join(', ')}?`,
+        'nothing written',
       );
+      if (!confirmations.consume(NAME, tokenArguments, token)) throw invalid();
     }
     try {
       await client.write('PATCH', entryPath(id, forced), toBody(fields));

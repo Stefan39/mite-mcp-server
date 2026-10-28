@@ -3,12 +3,15 @@ import type { z } from 'zod';
 
 import type { ConfirmationTokens } from '../confirm.js';
 import type { Config, Mode } from '../config.js';
+import type { Elicit } from '../elicit.js';
 import type { MiteClient } from '../mite/client.js';
 
 export interface ToolContext {
   client: MiteClient;
   config: Config;
   confirmations: ConfirmationTokens;
+  /** Asks the human via elicitation; resolves to `undefined` if the client does not support it. */
+  elicit: Elicit;
   /** Names of all tools registered for this session. */
   enabledTools: readonly string[];
 }

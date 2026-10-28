@@ -49,6 +49,8 @@ Ask Claude about your [mite](https://mite.de) time tracking — "How many hours 
 
 The token is bound to the tool and its arguments, valid for 5 minutes, usable once, and only known to the running server process (a restart invalidates it).
 
+If the MCP client supports elicitation, the second call (and any call with `force: true` and a token) additionally asks the human with a short summary of what will be deleted or forced. Only if the human accepts is anything executed. If they decline or cancel, nothing is sent to mite and the token stays unused until it expires. Clients without elicitation are not asked; the token alone applies.
+
 ### Locked entries
 
 Locked time entries cannot be changed or deleted by default; mite answers with 423 and the tool returns a "locked" error. `force` is never set automatically, not even after a 423.

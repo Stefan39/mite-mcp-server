@@ -1,5 +1,6 @@
 import { z } from 'zod';
 
+import { askHuman } from '../elicit.js';
 import { MiteApiError } from '../errors.js';
 import type { MiteTimeEntry } from '../mite/types.js';
 import { defineTool, result } from './definition.js';
@@ -37,7 +38,7 @@ export const deleteTimeEntry = defineTool({
       'true = also delete a locked entry. Uses the same two steps; the token is only valid together with force: true.',
     ),
   }),
-  handler: async (input, { client, config, confirmations }) => {
+  handler: async (input, { client, config, confirmations, elicit }) => {
     const { id, confirm_token: token, dry_run: dryRun } = input;
     const forced = config.mode === 'admin' && input.force === true;
     const tokenArguments = { id, ...(forced ? { force: true } : {}) };
@@ -64,11 +65,17 @@ export const deleteTimeEntry = defineTool({
       );
     }
 
-    if (!confirmations.consume(NAME, tokenArguments, token)) {
-      throw new Error(
+    const invalid = (): Error =>
+      new Error(
         `confirm_token is invalid, expired, already used or was issued for other arguments; nothing deleted. Call ${NAME} without confirm_token to get a new preview.`,
       );
-    }
+    if (!confirmations.check(NAME, tokenArguments, token)) throw invalid();
+    await askHuman(
+      elicit,
+      `Delete time entry ${id}${forced ? ' even if it is locked (force)' : ''}?`,
+      'nothing deleted',
+    );
+    if (!confirmations.consume(NAME, tokenArguments, token)) throw invalid();
     try {
       await client.delete(entryPath(id, forced));
     } catch (error) {
