@@ -21,7 +21,12 @@ export interface ToolDefinition<Input extends z.ZodObject = z.ZodObject> {
   mode: Mode;
   annotations: ToolAnnotations;
   inputSchema: Input;
-  handler: (input: z.infer<Input>, context: ToolContext) => Promise<CallToolResult>;
+  /** Input schema used instead of `inputSchema` in mode `admin`, e.g. with the extra parameter `force`. */
+  adminInputSchema?: z.ZodObject;
+  handler: (
+    input: z.infer<Input> & { force?: boolean | undefined },
+    context: ToolContext,
+  ) => Promise<CallToolResult>;
 }
 
 export function defineTool<Input extends z.ZodObject>(

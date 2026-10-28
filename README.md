@@ -32,10 +32,10 @@ Ask Claude about your [mite](https://mite.de) time tracking — "How many hours 
 | `mite_list_services`                                                 | read-only | Services, active or archived                                                                                                       |
 | `mite_list_users`                                                    | read-only | Users and roles (no email, no rates), active or archived                                                                           |
 | `mite_create_time_entry`                                             | write     | Creates a time entry; `dry_run: true` shows a preview and writes nothing                                                           |
-| `mite_update_time_entry`                                             | write     | Changes fields of a time entry (not locked ones); `dry_run: true` shows current vs. new values and writes nothing                  |
+| `mite_update_time_entry`                                             | write     | Changes fields of a time entry (locked ones: see below); `dry_run: true` shows current vs. new values and writes nothing           |
 | `mite_start_tracker`                                                 | write     | Starts the tracker on a time entry                                                                                                 |
 | `mite_stop_tracker`                                                  | write     | Stops the tracker on a time entry                                                                                                  |
-| `mite_delete_time_entry`                                             | write     | Deletes a time entry in two steps with a confirmation token (see below); locked entries are refused                                |
+| `mite_delete_time_entry`                                             | write     | Deletes a time entry in two steps with a confirmation token (see below); locked entries: see "Locked entries"                      |
 | `mite_create_customer`, `mite_create_project`, `mite_create_service` | admin     | Creates a customer, project or service; `dry_run: true` shows a preview and writes nothing                                         |
 | `mite_update_customer`, `mite_update_project`, `mite_update_service` | admin     | Changes fields; `archived: true` archives, `archived: false` restores; `dry_run: true` writes nothing                              |
 | `mite_delete_customer`, `mite_delete_project`, `mite_delete_service` | admin     | Deletes in two steps with a confirmation token (see below); mite's refusal, e.g. while time entries exist, is returned as an error |
@@ -47,7 +47,13 @@ Ask Claude about your [mite](https://mite.de) time tracking — "How many hours 
 1. Call it with the `id` (or with `dry_run: true`). It returns a preview of the entry and a `confirm_token`; nothing is deleted.
 2. Call it again with the same `id` and the `confirm_token`. Only then is it deleted.
 
-The token is bound to the tool and its arguments, valid for 5 minutes, usable once, and only known to the running server process (a restart invalidates it). Locked entries cannot be deleted; there is no `force` option.
+The token is bound to the tool and its arguments, valid for 5 minutes, usable once, and only known to the running server process (a restart invalidates it).
+
+### Locked entries
+
+Locked time entries cannot be changed or deleted by default; mite answers with 423 and the tool returns a "locked" error. `force` is never set automatically, not even after a 423.
+
+In mode `admin` only, `mite_update_time_entry` and `mite_delete_time_entry` additionally accept `force: true`. A call with `force: true` always needs a `confirm_token`, also on update: the first call (or `dry_run: true`) returns a preview stating that the entry is locked, plus a token; only a second call with the same arguments, `force: true` and the token executes. In modes `read-only` and `write` the parameter is not part of the input schema.
 
 More tools (more reports) are planned — see [the architecture decision](docs/adr/0001-architecture.md).
 

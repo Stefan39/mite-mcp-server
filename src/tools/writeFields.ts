@@ -16,6 +16,18 @@ export const dryRun = z
   .default(false)
   .describe('true = only show a preview of the change and write nothing.');
 
+/** Admin-only parameter: write to a locked time entry, always together with a `confirm_token`. */
+export const force = z
+  .boolean()
+  .optional()
+  .describe(
+    'true = also change a locked entry. Needs a confirm_token: the first call returns a preview and a token.',
+  );
+
+/** Path of a time entry; `force` is only sent for an explicit `force: true` in mode `admin`. */
+export const entryPath = (id: number, forced: boolean): string =>
+  `/time_entries/${id}.json${forced ? '?force=true' : ''}`;
+
 type Fields = { [K in keyof typeof entryFields]?: z.infer<(typeof entryFields)[K]> | undefined };
 
 /** Translates the given fields into the body of a mite time entry. */
