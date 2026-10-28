@@ -4,7 +4,15 @@ import { MiteApiError } from '../errors.js';
 import type { MiteTimeEntry } from '../mite/types.js';
 import { defineTool, result } from './definition.js';
 import { toRow, type TimeEntryRow } from './timeEntry.js';
-import { definedFields, dryRun, entryFields, entryPath, force, toBody } from './writeFields.js';
+import {
+  definedFields,
+  describeChange,
+  dryRun,
+  entryFields,
+  entryPath,
+  force,
+  toBody,
+} from './writeFields.js';
 
 const inputSchema = z.object({
   id: z.number().int().positive().describe('Id of the time entry.'),
@@ -109,10 +117,13 @@ export const updateTimeEntry = defineTool({
       }
       throw error;
     }
-    return result(`Time entry ${id} updated: ${changes.map(([field]) => field).join(', ')}.`, {
-      dry_run: false,
-      id,
-      updated: changes.map(([field]) => field),
-    });
+    return result(
+      `Time entry ${id} updated: ${changes.map(([field, value]) => describeChange(field, value)).join(', ')}.`,
+      {
+        dry_run: false,
+        id,
+        updated: changes.map(([field]) => field),
+      },
+    );
   },
 });

@@ -5,6 +5,11 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), ver
 
 ## [Unreleased]
 
+### Fixed
+
+- `mite_tracker_status`: the text no longer reads as if the entry had been running for its total duration; it says the tracker runs since `since` and the entry now has the given minutes in total. Structured content is unchanged.
+- Update messages of `mite_update_customer`, `mite_update_project`, `mite_update_service` and `mite_update_time_entry` name the new value of each field (`archived = false (restored)`), so archiving and restoring differ; long values such as `note` are shortened to 80 characters.
+
 ## [0.3.0] - 2026-10-28
 
 First release. Version numbers 0.1 and 0.2 were milestones that were never tagged.

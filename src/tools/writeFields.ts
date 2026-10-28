@@ -47,3 +47,19 @@ export function definedFields(fields: Fields): [string, string | number][] {
     (pair): pair is [string, string | number] => pair[1] !== undefined,
   );
 }
+
+const MAX_VALUE_LENGTH = 80;
+
+/** One changed field as `field = value`; strings are quoted as data and shortened to 80 characters. */
+export function describeChange(field: string, value: unknown): string {
+  let text: string;
+  if (typeof value === 'string') {
+    const shortened =
+      value.length > MAX_VALUE_LENGTH ? `${value.slice(0, MAX_VALUE_LENGTH)}…` : value;
+    text = JSON.stringify(shortened);
+  } else {
+    text = String(value);
+  }
+  const suffix = field === 'archived' ? (value === true ? ' (archived)' : ' (restored)') : '';
+  return `${field} = ${text}${suffix}`;
+}
