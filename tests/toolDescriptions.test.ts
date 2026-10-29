@@ -8,6 +8,13 @@ const CHECKED_TOOLS = [
   'mite_report',
   'mite_report_budget',
   'mite_report_billable_ratio',
+  'mite_list_time_entries',
+  'mite_get_time_entry',
+  'mite_tracker_status',
+  'mite_list_customers',
+  'mite_list_projects',
+  'mite_list_services',
+  'mite_list_users',
 ];
 
 describe('tool descriptions', () => {

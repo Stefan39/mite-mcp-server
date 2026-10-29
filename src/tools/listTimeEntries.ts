@@ -9,14 +9,39 @@ const idList = z.array(z.number().int().positive()).min(1).optional();
 
 const inputSchema = z.object({
   ...periodShape,
-  customer_id: idList.describe('Only these customers.'),
-  project_id: idList.describe('Only these projects.'),
-  service_id: idList.describe('Only these services.'),
-  user_id: idList.describe('Only these users (needs a key that may see other users).'),
-  billable: z.boolean().optional().describe('true = only billable, false = only non-billable.'),
-  locked: z.boolean().optional().describe('true = only locked, false = only unlocked.'),
-  limit: z.number().int().min(1).max(1000).default(100).describe('Entries per page (1–1000).'),
-  page: z.number().int().min(1).default(1).describe('Page number, starting at 1.'),
+  customer_id: idList.describe(
+    'Only these customers: list of customer ids, e.g. [123, 456]. Default: all customers.',
+  ),
+  project_id: idList.describe(
+    'Only these projects: list of project ids, e.g. [789]. Default: all projects.',
+  ),
+  service_id: idList.describe(
+    'Only these services: list of service ids, e.g. [42]. Default: all services.',
+  ),
+  user_id: idList.describe(
+    'Only these users: list of user ids, e.g. [7] (needs a key that may see other users). Default: all users the key may see.',
+  ),
+  billable: z
+    .boolean()
+    .optional()
+    .describe('true = only billable, false = only non-billable, e.g. true. Default: both.'),
+  locked: z
+    .boolean()
+    .optional()
+    .describe('true = only locked, false = only unlocked, e.g. false. Default: both.'),
+  limit: z
+    .number()
+    .int()
+    .min(1)
+    .max(1000)
+    .default(100)
+    .describe('Entries per page, 1–1000, e.g. 50. Default: 100.'),
+  page: z
+    .number()
+    .int()
+    .min(1)
+    .default(1)
+    .describe('Page number, starting at 1, e.g. 2. Default: 1.'),
 });
 
 export function renderEntries(rows: TimeEntryRow[], hasMore: boolean): string {
@@ -35,9 +60,10 @@ export const listTimeEntries = defineTool({
   name: 'mite_list_time_entries',
   title: 'List time entries',
   description:
-    'Single time entries from mite for a period, newest first, with optional filters. ' +
-    'Returns at most `limit` entries and `has_more` when further entries exist. ' +
-    'For totals prefer the aggregated reports.',
+    'Lists single time entries from mite for a period, newest first, optionally filtered by customer, project, service, user, billable or locked. ' +
+    'Use it to find individual entries or their ids; for totals use `mite_report`, for one known entry use `mite_get_time_entry`. ' +
+    'Each row has hours, revenue in currency units (null if none), the locked flag and the note. ' +
+    'Returns at most `limit` entries per page (default 100, max 1000) and `has_more` when further pages exist; the period defaults to this_year.',
   mode: 'read-only',
   annotations: { readOnlyHint: true, openWorldHint: true },
   inputSchema,
