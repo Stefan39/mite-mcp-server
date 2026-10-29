@@ -5,6 +5,10 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), ver
 
 ## [Unreleased]
 
+### Changed
+
+- Tool and parameter descriptions rewritten for agents (when to use, what it returns, limits); no change to names or schemas.
+
 ## [1.0.0] - 2026-10-29
 
 First stable release. Tool names, their parameters and the configuration variables now follow semantic versioning: a breaking change needs a new major version.

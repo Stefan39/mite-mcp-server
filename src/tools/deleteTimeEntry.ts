@@ -10,21 +10,33 @@ import { DATA_NOTICE, renderRow, ROW_HEADER, toRow } from './timeEntry.js';
 const NAME = 'mite_delete_time_entry';
 
 const inputSchema = z.object({
-  id: z.number().int().positive().describe('Id of the time entry.'),
+  id: z
+    .number()
+    .int()
+    .positive()
+    .describe(
+      'Id of the time entry to delete, e.g. 12345. Find ids with `mite_list_time_entries`.',
+    ),
   confirm_token: z
     .string()
     .optional()
-    .describe('Token from the preview call. Omit it to get a preview.'),
-  dry_run: z.boolean().optional().describe('Only preview, even if a token is given.'),
+    .describe(
+      'Token from the preview call, e.g. the `confirm_token` value it returned. Omit it to get a preview. Valid for 5 minutes, usable once. Default: none.',
+    ),
+  dry_run: z
+    .boolean()
+    .optional()
+    .describe('true = only preview, even if a token is given, e.g. true. Default: false.'),
 });
 
 export const deleteTimeEntry = defineTool({
   name: NAME,
   title: 'Delete a time entry',
   description:
-    'Deletes a time entry in two steps. The first call (or dry_run: true) returns a preview and a confirm_token; ' +
-    'only a second call with that token, valid for 5 minutes and usable once, deletes the entry. ' +
-    'Locked entries cannot be deleted; in mode admin, `force: true` deletes a locked entry with the same two steps.',
+    'Permanently deletes one time entry by id; look the id up with `mite_list_time_entries` first, and use `mite_update_time_entry` if the entry only needs correcting. ' +
+    'Works in two steps: the first call (or dry_run: true) returns a preview of the entry (hours, revenue in currency units) and a confirm_token; ' +
+    'only a second call with that token, valid for 5 minutes and usable once, deletes the entry and returns `deleted: true`. ' +
+    'Needs mode write or admin. Locked entries cannot be deleted; in mode admin, `force: true` deletes a locked entry with the same two steps.',
   mode: 'write',
   annotations: {
     readOnlyHint: false,
@@ -35,7 +47,7 @@ export const deleteTimeEntry = defineTool({
   inputSchema,
   adminInputSchema: inputSchema.extend({
     force: force.describe(
-      'true = also delete a locked entry. Uses the same two steps; the token is only valid together with force: true.',
+      'true = also delete a locked entry, e.g. true. Uses the same two steps; the token is only valid together with force: true. Default: false (locked entries are refused).',
     ),
   }),
   handler: async (input, { client, config, confirmations, elicit }) => {

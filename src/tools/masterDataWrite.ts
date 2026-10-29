@@ -5,8 +5,15 @@ import { MiteApiError } from '../errors.js';
 import { defineTool, result } from './definition.js';
 import { describeChange, dryRun } from './writeFields.js';
 
-const NOTE = z.string().max(10_000).describe('Note.');
-const NAME = z.string().min(1).max(255).describe('Name.');
+const NOTE = z
+  .string()
+  .max(10_000)
+  .describe('Free-text note, up to 10000 characters, e.g. "Internal projects".');
+const NAME = z
+  .string()
+  .min(1)
+  .max(255)
+  .describe('Name, 1–255 characters, e.g. "Acme Corp". Required when creating.');
 
 interface MasterDataWriteSpec {
   /** Singular noun, e.g. `customer`; also the tool name part and the key of the mite body. */
@@ -34,7 +41,9 @@ function defineMasterDataWriteTools(spec: MasterDataWriteSpec) {
     name: createName,
     title: `Create a ${entity}`,
     description:
-      `Creates a ${entity}. ` +
+      `Creates a new ${entity} in the mite account; use \`mite_update_${entity}\` to change an existing one and \`mite_list_${resource}\` to check whether it exists. ` +
+      'Returns the id and the created record as mite sends it. ' +
+      'Needs mode admin; only `name` is required, and calling it twice creates two records. ' +
       'With `dry_run: true` it only shows what would be created and writes nothing.',
     mode: 'admin',
     annotations: {
@@ -74,9 +83,10 @@ function defineMasterDataWriteTools(spec: MasterDataWriteSpec) {
     name: updateName,
     title: `Update, archive or restore a ${entity}`,
     description:
-      `Changes fields of a ${entity}; fields that are not given stay as they are. ` +
-      '`archived: true` archives it, `archived: false` restores it. ' +
-      'With `dry_run: true` it shows the changes and writes nothing.',
+      `Changes fields of an existing ${entity}; fields that are not given stay as they are, but at least one must be given. Use \`mite_create_${entity}\` for a new one and \`mite_list_${resource}\` to find the id. ` +
+      '`archived: true` archives it, `archived: false` restores it; archiving is the alternative to deleting. ' +
+      'Returns the names of the updated fields; with `dry_run: true` it returns the planned changes and writes nothing. ' +
+      'Needs mode admin.',
     mode: 'admin',
     annotations: {
       readOnlyHint: false,
@@ -85,10 +95,17 @@ function defineMasterDataWriteTools(spec: MasterDataWriteSpec) {
       openWorldHint: true,
     },
     inputSchema: z.object({
-      id: idSchema.describe(`Id of the ${entity}.`),
-      name: NAME.optional(),
+      id: idSchema.describe(
+        `Id of the ${entity} to change, e.g. 123. Find ids with \`mite_list_${resource}\`.`,
+      ),
+      name: NAME.optional().describe(
+        'New name, 1–255 characters, e.g. "Acme Corp". Default: unchanged.',
+      ),
       ...Object.fromEntries(Object.entries(spec.fields).map(([k, v]) => [k, v.optional()])),
-      archived: z.boolean().optional().describe('true = archive, false = restore.'),
+      archived: z
+        .boolean()
+        .optional()
+        .describe('true = archive, false = restore, e.g. true. Default: unchanged.'),
       dry_run: dryRun,
     }),
     handler: async ({ id, dry_run, ...fields }, { client }) => {
@@ -124,9 +141,10 @@ function defineMasterDataWriteTools(spec: MasterDataWriteSpec) {
     name: deleteName,
     title: `Delete a ${entity}`,
     description:
-      `Deletes a ${entity} in two steps. The first call (or dry_run: true) returns a preview and a confirm_token; ` +
-      'only a second call with that token, valid for 5 minutes and usable once, deletes it. ' +
-      'mite refuses to delete it while time entries still use it; archive it instead.',
+      `Permanently deletes a ${entity} by id; look the id up with \`mite_list_${resource}\`, and use \`mite_update_${entity}\` with \`archived: true\` to keep the history. ` +
+      'Works in two steps: the first call (or dry_run: true) returns a preview with the name and a confirm_token; ' +
+      'only a second call with that token, valid for 5 minutes and usable once, deletes it and returns `deleted: true`. ' +
+      'Needs mode admin. mite refuses to delete it while time entries still use it; archive it instead.',
     mode: 'admin',
     annotations: {
       readOnlyHint: false,
@@ -135,12 +153,19 @@ function defineMasterDataWriteTools(spec: MasterDataWriteSpec) {
       openWorldHint: true,
     },
     inputSchema: z.object({
-      id: idSchema.describe(`Id of the ${entity}.`),
+      id: idSchema.describe(
+        `Id of the ${entity} to delete, e.g. 123. Find ids with \`mite_list_${resource}\`.`,
+      ),
       confirm_token: z
         .string()
         .optional()
-        .describe('Token from the preview call. Omit it to get a preview.'),
-      dry_run: z.boolean().optional().describe('Only preview, even if a token is given.'),
+        .describe(
+          'Token from the preview call, e.g. the `confirm_token` value it returned. Omit it to get a preview. Valid for 5 minutes, usable once. Default: none.',
+        ),
+      dry_run: z
+        .boolean()
+        .optional()
+        .describe('true = only preview, even if a token is given, e.g. true. Default: false.'),
     }),
     handler: async (input, { client, confirmations, elicit }) => {
       const { id, confirm_token: token, dry_run: preview } = input;
@@ -206,14 +231,28 @@ export const [createProject, updateProject, deleteProject] = defineMasterDataWri
   resource: 'projects',
   fields: {
     note: NOTE,
-    customer_id: idSchema.describe('Id of the customer.'),
-    budget: z.number().min(0).describe('Budget in the unit given by `budget_type`.'),
-    budget_type: z.enum(['minutes', 'cents']).describe('Unit of the budget.'),
+    customer_id: idSchema.describe(
+      'Id of the customer the project belongs to, e.g. 123. Find ids with `mite_list_customers`.',
+    ),
+    budget: z
+      .number()
+      .min(0)
+      .describe(
+        'Budget, 0 or more, in the unit given by `budget_type`, e.g. 6000 (with minutes = 100 hours).',
+      ),
+    budget_type: z
+      .enum(['minutes', 'cents'])
+      .describe(
+        'Unit of the budget: `minutes` (time budget) or `cents` (money budget), e.g. minutes.',
+      ),
   },
 });
 
 export const [createService, updateService, deleteService] = defineMasterDataWriteTools({
   entity: 'service',
   resource: 'services',
-  fields: { note: NOTE, billable: z.boolean().describe('Whether the service is billable.') },
+  fields: {
+    note: NOTE,
+    billable: z.boolean().describe('true = time booked on this service is billable, e.g. true.'),
+  },
 });
