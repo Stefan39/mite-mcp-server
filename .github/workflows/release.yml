@@ -1,4 +1,4 @@
-name: Release assets
+name: Release
 
 on:
   release:
@@ -6,18 +6,23 @@ on:
   workflow_dispatch:
     inputs:
       tag:
-        description: 'Existing release tag, e.g. v0.5.0'
+        description: 'Existing release tag, e.g. v1.0.0'
         required: true
 
 permissions:
-  contents: write
+  contents: read
+
+env:
+  TAG: ${{ github.event.release.tag_name || inputs.tag }}
 
 jobs:
   mcpb:
     name: Attach Claude Desktop bundle
     runs-on: ubuntu-latest
-    env:
-      TAG: ${{ github.event.release.tag_name || inputs.tag }}
+    permissions:
+      contents: write
+    outputs:
+      sha256: ${{ steps.hash.outputs.sha256 }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -29,6 +34,8 @@ jobs:
       - run: npm ci
       - run: npm run build
       - run: npm run bundle
+      - id: hash
+        run: echo "sha256=$(sha256sum "mite-mcp-server-${TAG#v}.mcpb" | cut -d' ' -f1)" >> "$GITHUB_OUTPUT"
       - name: Upload to the release
         env:
           GH_TOKEN: ${{ github.token }}
@@ -36,3 +43,86 @@ jobs:
           version="${TAG#v}"
           cp "mite-mcp-server-${version}.mcpb" mite-mcp-server.mcpb
           gh release upload "$TAG" "mite-mcp-server-${version}.mcpb" mite-mcp-server.mcpb --clobber
+
+  npm:
+    name: Publish to npm
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write # npm trusted publishing, no token stored in the repo
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ env.TAG }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          registry-url: https://registry.npmjs.org
+      - name: Skip if this version is already on npm
+        id: check
+        run: |
+          version="$(node -p "require('./package.json').version")"
+          if npm view "mite-mcp-server@${version}" version >/dev/null 2>&1; then
+            echo "published=true" >> "$GITHUB_OUTPUT"
+            echo "mite-mcp-server@${version} is already on npm, skipping."
+          fi
+      - name: Update npm (trusted publishing needs npm 11.5.1 or newer)
+        if: steps.check.outputs.published != 'true'
+        run: npm install -g npm@11
+      - if: steps.check.outputs.published != 'true'
+        run: npm ci
+      - if: steps.check.outputs.published != 'true'
+        run: npm publish --access public
+
+  registry:
+    name: Publish to the MCP Registry
+    needs: [mcpb, npm]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write # GitHub OIDC login for the io.github.Stefan39 namespace
+    env:
+      MCP_PUBLISHER_VERSION: v1.8.6
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ env.TAG }}
+      - name: Fill version and bundle hash into server.json
+        env:
+          SHA256: ${{ needs.mcpb.outputs.sha256 }}
+        run: |
+          version="${TAG#v}"
+          jq --arg v "$version" --arg sha "$SHA256" '
+            .version = $v
+            | (.packages[] | select(.registryType == "npm")).version = $v
+            | (.packages[] | select(.registryType == "mcpb")) |= (
+                .identifier = "https://github.com/Stefan39/mite-mcp-server/releases/download/v\($v)/mite-mcp-server-\($v).mcpb"
+                | .fileSha256 = $sha)
+          ' server.json > server.tmp && mv server.tmp server.json
+          cat server.json
+      - name: Install cosign
+        uses: sigstore/cosign-installer@6f9f17788090df1f26f669e9d70d6ae9567deba6 # v4.1.2
+      - name: Download and verify mcp-publisher
+        run: |
+          set -euo pipefail
+          archive="mcp-publisher_linux_amd64.tar.gz"
+          base_url="https://github.com/modelcontextprotocol/registry/releases/download/${MCP_PUBLISHER_VERSION}"
+          curl --fail --location --silent --show-error --output "$archive" "$base_url/$archive"
+          curl --fail --location --silent --show-error --output "$archive.sigstore.json" "$base_url/$archive.sigstore.json"
+          cosign verify-blob \
+            --bundle "$archive.sigstore.json" \
+            --certificate-identity "https://github.com/modelcontextprotocol/registry/.github/workflows/release.yml@refs/tags/${MCP_PUBLISHER_VERSION}" \
+            --certificate-oidc-issuer "https://token.actions.githubusercontent.com" \
+            "$archive"
+          tar xzf "$archive" mcp-publisher
+      - name: Wait until npm serves the version
+        run: |
+          version="${TAG#v}"
+          for i in $(seq 1 30); do
+            npm view "mite-mcp-server@${version}" version && exit 0
+            sleep 10
+          done
+          exit 1
+      - run: ./mcp-publisher login github-oidc
+      - run: ./mcp-publisher publish

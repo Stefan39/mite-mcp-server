@@ -42,6 +42,30 @@ function resolve(values: Record<string, string | boolean>): Record<string, strin
   );
 }
 
+describe('MCP Registry server.json', () => {
+  const pkg = readJson('../package.json') as { version: string; mcpName: string };
+  const server = readJson('../server.json') as {
+    name: string;
+    version: string;
+    packages: { registryType: string; identifier: string; version?: string }[];
+  };
+
+  it('uses the mcpName of package.json and its version', () => {
+    expect(server.name).toBe(pkg.mcpName);
+    expect(server.version).toBe(pkg.version);
+    expect(server.packages.find((p) => p.registryType === 'npm')).toMatchObject({
+      identifier: 'mite-mcp-server',
+      version: pkg.version,
+    });
+  });
+
+  it('points the bundle at the release of this version', () => {
+    expect(server.packages.find((p) => p.registryType === 'mcpb')?.identifier).toBe(
+      `https://github.com/Stefan39/mite-mcp-server/releases/download/v${pkg.version}/mite-mcp-server-${pkg.version}.mcpb`,
+    );
+  });
+});
+
 describe('mcpb manifest', () => {
   it('has the version of package.json', () => {
     expect(manifest.version).toBe((readJson('../package.json') as { version: string }).version);
