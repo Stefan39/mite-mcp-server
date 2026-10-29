@@ -8,7 +8,7 @@ import { definedFields, dryRun, entryFields, toBody } from './writeFields.js';
 const inputSchema = z.object({
   date_at: entryFields.date_at
     .optional()
-    .describe('Date of the entry (YYYY-MM-DD). Default: today.'),
+    .describe('Date of the entry as YYYY-MM-DD, e.g. 2026-10-29. Default: today.'),
   hours: entryFields.hours.optional(),
   note: entryFields.note.optional(),
   project_id: entryFields.project_id.optional(),
@@ -20,7 +20,9 @@ export const createTimeEntry = defineTool({
   name: 'mite_create_time_entry',
   title: 'Create a time entry',
   description:
-    'Creates a time entry for the user of the API key. ' +
+    'Creates a new time entry for the user of the API key; use it to book time, `mite_update_time_entry` to change an existing entry and `mite_start_tracker` to run a timer on one. ' +
+    'Returns the created entry with its id, hours (not minutes) and revenue in currency units (null if none). ' +
+    'Needs mode write or admin; no field is required by the tool, and calling it twice creates two entries. ' +
     'With `dry_run: true` it only shows what would be created and writes nothing.',
   mode: 'write',
   annotations: {

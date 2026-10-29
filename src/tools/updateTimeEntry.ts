@@ -16,7 +16,13 @@ import {
 } from './writeFields.js';
 
 const inputSchema = z.object({
-  id: z.number().int().positive().describe('Id of the time entry.'),
+  id: z
+    .number()
+    .int()
+    .positive()
+    .describe(
+      'Id of the time entry to change, e.g. 12345. Find ids with `mite_list_time_entries`.',
+    ),
   date_at: entryFields.date_at.optional(),
   hours: entryFields.hours.optional(),
   note: entryFields.note.optional(),
@@ -30,7 +36,9 @@ const adminInputSchema = inputSchema.extend({
   confirm_token: z
     .string()
     .optional()
-    .describe('Token from the preview call; required with `force: true`.'),
+    .describe(
+      'Token from the preview call, e.g. the `confirm_token` value it returned; required with `force: true`, valid for 5 minutes and usable once. Default: none.',
+    ),
 });
 
 const NAME = 'mite_update_time_entry';
@@ -42,9 +50,9 @@ export const updateTimeEntry = defineTool({
   name: NAME,
   title: 'Update a time entry',
   description:
-    'Changes fields of an existing time entry; fields that are not given stay as they are. ' +
-    'With `dry_run: true` it shows current and new values and writes nothing. ' +
-    'A locked entry cannot be changed. In mode admin, `force: true` changes a locked entry in two steps: ' +
+    'Changes fields of an existing time entry (date, hours, note, project, service); fields that are not given stay as they are, but at least one must be given. Use `mite_create_time_entry` for a new entry. ' +
+    'Returns the names of the updated fields; with `dry_run: true` it returns current and new values and writes nothing, and it needs mode write or admin. ' +
+    'A locked entry cannot be changed; in mode admin, `force: true` changes a locked entry in two steps: ' +
     'the first call (or dry_run: true) returns a preview and a confirm_token; only a second call with that token, ' +
     'valid for 5 minutes and usable once, writes.',
   mode: 'write',

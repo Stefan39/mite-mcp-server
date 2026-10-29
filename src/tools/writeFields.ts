@@ -4,24 +4,45 @@ const date = z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Use YYYY-MM-DD.');
 
 /** Fields a time entry can be written with; input uses hours, mite stores minutes. */
 export const entryFields = {
-  date_at: date.describe('Date of the entry (YYYY-MM-DD).'),
-  hours: z.number().min(0).max(24).describe('Duration in hours, e.g. 1.5.'),
-  note: z.string().max(10_000).describe('Note of the entry.'),
-  project_id: z.number().int().positive().describe('Id of the project.'),
-  service_id: z.number().int().positive().describe('Id of the service.'),
+  date_at: date.describe('Date of the entry as YYYY-MM-DD, e.g. 2026-10-29.'),
+  hours: z
+    .number()
+    .min(0)
+    .max(24)
+    .describe(
+      'Duration in hours, 0–24, decimals allowed, e.g. 1.5 (= 90 minutes). Stored in whole minutes.',
+    ),
+  note: z
+    .string()
+    .max(10_000)
+    .describe('Free-text note of the entry, up to 10000 characters, e.g. "Sprint planning".'),
+  project_id: z
+    .number()
+    .int()
+    .positive()
+    .describe('Id of the project to book on, e.g. 789. Find ids with `mite_list_projects`.'),
+  service_id: z
+    .number()
+    .int()
+    .positive()
+    .describe(
+      'Id of the service (type of work) to book on, e.g. 42. Find ids with `mite_list_services`.',
+    ),
 };
 
 export const dryRun = z
   .boolean()
   .default(false)
-  .describe('true = only show a preview of the change and write nothing.');
+  .describe(
+    'true = only show a preview of the change and write nothing, e.g. true. Default: false.',
+  );
 
 /** Admin-only parameter: write to a locked time entry, always together with a `confirm_token`. */
 export const force = z
   .boolean()
   .optional()
   .describe(
-    'true = also change a locked entry. Needs a confirm_token: the first call returns a preview and a token.',
+    'true = also change a locked entry, e.g. true. Needs a confirm_token: the first call returns a preview and a token. Default: false (locked entries are refused).',
   );
 
 /** Path of a time entry; `force` is only sent for an explicit `force: true` in mode `admin`. */
