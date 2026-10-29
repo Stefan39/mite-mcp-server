@@ -67,7 +67,7 @@ More tools (more reports) are planned — see [the architecture decision](docs/a
 2. Double-click the file. Claude Desktop opens and offers to install the extension.
 3. Fill in the settings and enable the extension:
 
-![mite extension settings in Claude Desktop](docs/images/claude-desktop-settings.png)
+![mite extension settings in Claude Desktop](https://raw.githubusercontent.com/Stefan39/mite-mcp-server/main/docs/images/claude-desktop-settings.png)
 
 | Setting                         | Meaning                                                                                          |
 | ------------------------------- | ------------------------------------------------------------------------------------------------ |
@@ -85,21 +85,14 @@ Changing a setting later: Claude Desktop → Settings → Extensions → mite. *
 
 Requirements: Node.js 22 or newer, a mite account with API access enabled (enable it in your mite user settings), and your API key from there.
 
-> The package is not published on npm yet. Until it is, build it from source:
->
-> ```bash
-> git clone https://github.com/Stefan39/mite-mcp-server.git
-> cd mite-mcp-server && npm ci && npm run build
-> ```
-
 Add the server to `claude_desktop_config.json` (macOS: `~/Library/Application Support/Claude/`), then restart Claude Desktop:
 
 ```json
 {
   "mcpServers": {
     "mite": {
-      "command": "node",
-      "args": ["/absolute/path/to/mite-mcp-server/dist/index.js"],
+      "command": "npx",
+      "args": ["-y", "mite-mcp-server"],
       "env": {
         "MITE_ACCOUNT": "your-account",
         "MITE_API_KEY": "your-api-key"

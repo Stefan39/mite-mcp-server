@@ -1,0 +1,57 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.Stefan39/mite-mcp-server",
+  "title": "mite",
+  "description": "mite time tracking: server-side reports, time entries, master data. Read-only by default.",
+  "repository": {
+    "url": "https://github.com/Stefan39/mite-mcp-server",
+    "source": "github"
+  },
+  "websiteUrl": "https://github.com/Stefan39/mite-mcp-server#readme",
+  "version": "1.0.0",
+  "packages": [
+    {
+      "registryType": "npm",
+      "identifier": "mite-mcp-server",
+      "version": "1.0.0",
+      "runtimeHint": "npx",
+      "transport": {
+        "type": "stdio"
+      },
+      "environmentVariables": [
+        {
+          "name": "MITE_ACCOUNT",
+          "description": "mite account name, the subdomain of <account>.mite.de",
+          "isRequired": true,
+          "format": "string"
+        },
+        {
+          "name": "MITE_API_KEY",
+          "description": "Personal mite API key",
+          "isRequired": true,
+          "isSecret": true,
+          "format": "string"
+        },
+        {
+          "name": "MITE_MODE",
+          "description": "read-only (default), write or admin",
+          "format": "string",
+          "choices": ["read-only", "write", "admin"]
+        },
+        {
+          "name": "MITE_TOOLS",
+          "description": "Comma-separated tool allowlist",
+          "format": "string"
+        }
+      ]
+    },
+    {
+      "registryType": "mcpb",
+      "identifier": "https://github.com/Stefan39/mite-mcp-server/releases/download/v1.0.0/mite-mcp-server-1.0.0.mcpb",
+      "fileSha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "transport": {
+        "type": "stdio"
+      }
+    }
+  ]
+}
