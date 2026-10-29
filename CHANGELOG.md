@@ -5,6 +5,8 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), ver
 
 ## [Unreleased]
 
+## [0.5.0] - 2026-10-29
+
 ### Added
 
 - Claude Desktop bundle (`.mcpb`): install with a double click and configure in the extension settings — mite account, API key (stored securely, shown masked), switches "Zeiteinträge schreiben erlauben" and "Stammdaten verwalten" (both off by default) and an optional tool allowlist. CI builds the bundle and attaches it to every published release.
@@ -48,6 +50,7 @@ First release. Version numbers 0.1 and 0.2 were milestones that were never tagge
 - Mode `admin`: `mite_update_time_entry` and `mite_delete_time_entry` accept `force: true` to change or delete a locked entry. A call with `force: true` always needs a `confirm_token` (also on update); the first call or `dry_run: true` returns a preview stating that the entry is locked, plus a token. Outside mode `admin` the parameter is not in the input schema, and `force` is never set automatically, not even after a 423.
 - mite API client with polite throttling, retries (reads on 429 and 5xx, writes on 429 only, because mite may have processed a write that answered 5xx) and API-key redaction.
 
-[Unreleased]: https://github.com/Stefan39/mite-mcp-server/compare/v0.4.0...HEAD
+[Unreleased]: https://github.com/Stefan39/mite-mcp-server/compare/v0.5.0...HEAD
+[0.5.0]: https://github.com/Stefan39/mite-mcp-server/compare/v0.4.0...v0.5.0
 [0.4.0]: https://github.com/Stefan39/mite-mcp-server/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/Stefan39/mite-mcp-server/releases/tag/v0.3.0
