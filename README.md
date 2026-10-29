@@ -67,6 +67,8 @@ More tools (more reports) are planned — see [the architecture decision](docs/a
 2. Double-click the file. Claude Desktop opens and offers to install the extension.
 3. Fill in the settings and enable the extension:
 
+![mite extension settings in Claude Desktop](docs/images/claude-desktop-settings.png)
+
 | Setting                         | Meaning                                                                                          |
 | ------------------------------- | ------------------------------------------------------------------------------------------------ |
 | mite-Account                    | The name in your mite address: for `https://example.mite.de` enter `example`                     |

@@ -67,6 +67,8 @@ Weitere Werkzeuge (weitere Auswertungen) sind geplant — siehe [Architekturents
 2. Die Datei doppelklicken. Claude Desktop öffnet sich und bietet die Installation der Erweiterung an.
 3. Die Einstellungen ausfüllen und die Erweiterung aktivieren:
 
+![Einstellungen der mite-Erweiterung in Claude Desktop](docs/images/claude-desktop-settings.png)
+
 | Einstellung                     | Bedeutung                                                                                                   |
 | ------------------------------- | ----------------------------------------------------------------------------------------------------------- |
 | mite-Account                    | Der Name in Ihrer mite-Adresse: bei `https://beispiel.mite.de` geben Sie `beispiel` ein                     |
