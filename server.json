@@ -8,12 +8,12 @@
     "source": "github"
   },
   "websiteUrl": "https://github.com/Stefan39/mite-mcp-server#readme",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "packages": [
     {
       "registryType": "npm",
       "identifier": "mite-mcp-server",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "runtimeHint": "npx",
       "transport": {
         "type": "stdio"
@@ -47,7 +47,7 @@
     },
     {
       "registryType": "mcpb",
-      "identifier": "https://github.com/Stefan39/mite-mcp-server/releases/download/v1.0.0/mite-mcp-server-1.0.0.mcpb",
+      "identifier": "https://github.com/Stefan39/mite-mcp-server/releases/download/v1.0.1/mite-mcp-server-1.0.1.mcpb",
       "fileSha256": "0000000000000000000000000000000000000000000000000000000000000000",
       "transport": {
         "type": "stdio"

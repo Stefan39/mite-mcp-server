@@ -5,6 +5,8 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), ver
 
 ## [Unreleased]
 
+## [1.0.1] - 2026-10-29
+
 ### Changed
 
 - Tool and parameter descriptions rewritten for agents (when to use, what it returns, limits); no change to names or schemas.
@@ -64,7 +66,8 @@ First release. Version numbers 0.1 and 0.2 were milestones that were never tagge
 - Mode `admin`: `mite_update_time_entry` and `mite_delete_time_entry` accept `force: true` to change or delete a locked entry. A call with `force: true` always needs a `confirm_token` (also on update); the first call or `dry_run: true` returns a preview stating that the entry is locked, plus a token. Outside mode `admin` the parameter is not in the input schema, and `force` is never set automatically, not even after a 423.
 - mite API client with polite throttling, retries (reads on 429 and 5xx, writes on 429 only, because mite may have processed a write that answered 5xx) and API-key redaction.
 
-[Unreleased]: https://github.com/Stefan39/mite-mcp-server/compare/v1.0.0...HEAD
+[Unreleased]: https://github.com/Stefan39/mite-mcp-server/compare/v1.0.1...HEAD
+[1.0.1]: https://github.com/Stefan39/mite-mcp-server/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/Stefan39/mite-mcp-server/compare/v0.5.0...v1.0.0
 [0.5.0]: https://github.com/Stefan39/mite-mcp-server/compare/v0.4.0...v0.5.0
 [0.4.0]: https://github.com/Stefan39/mite-mcp-server/compare/v0.3.0...v0.4.0
