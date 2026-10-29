@@ -79,7 +79,7 @@ More tools (more reports) are planned — see [the architecture decision](docs/a
 
 No JSON, no environment variables, no Node.js installation: Claude Desktop runs the bundle with its built-in Node.js. You need a mite account with API access enabled (in your mite user settings) and your API key from there. The settings are in German because mite's users mostly are.
 
-Changing a setting later: Claude Desktop → Settings → Extensions → mite. In the same place you can also switch single tools on and off — on top of the switches above, which decide which tools exist at all.
+Changing a setting later: Claude Desktop → Settings → Extensions → mite. **A changed setting only takes effect after you switch the extension off and on again or restart Claude Desktop** — until then the running server keeps the old switches. Ask Claude to call `mite_whoami` to see the mode the server is actually running in. In the same place you can also switch single tools on and off — on top of the switches above, which decide which tools exist at all.
 
 ## Manual setup (Claude Desktop, for developers)
 

@@ -79,7 +79,7 @@ Weitere Werkzeuge (weitere Auswertungen) sind geplant — siehe [Architekturents
 
 Kein JSON, keine Umgebungsvariablen, keine Node.js-Installation: Claude Desktop startet das Bundle mit seinem eingebauten Node.js. Sie brauchen einen mite-Account mit freigeschaltetem API-Zugriff (in den Benutzereinstellungen von mite aktivieren) und Ihren API-Key von dort.
 
-Einstellungen später ändern: Claude Desktop → Einstellungen → Erweiterungen → mite. Dort lassen sich zusätzlich einzelne Werkzeuge ein- und ausschalten — ergänzend zu den Schaltern oben, die festlegen, welche Werkzeuge es überhaupt gibt.
+Einstellungen später ändern: Claude Desktop → Einstellungen → Erweiterungen → mite. **Eine geänderte Einstellung wirkt erst, wenn Sie die Erweiterung aus- und wieder einschalten oder Claude Desktop neu starten** — bis dahin behält der laufende Server die alten Schalter. Mit der Bitte „Ruf mite_whoami auf“ sehen Sie, in welchem Modus der Server tatsächlich läuft. Dort lassen sich zusätzlich einzelne Werkzeuge ein- und ausschalten — ergänzend zu den Schaltern oben, die festlegen, welche Werkzeuge es überhaupt gibt.
 
 ## Manuelle Einrichtung (Claude Desktop, für Entwickler)
 
