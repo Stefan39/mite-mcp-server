@@ -8,7 +8,9 @@ const inputSchema = z.object({
   archived: z
     .boolean()
     .default(false)
-    .describe('true = list archived entries instead of the active ones.'),
+    .describe(
+      'true = list archived entries instead of the active ones, e.g. true. Default: false.',
+    ),
 });
 
 interface MasterDataSpec<Row extends object> {
@@ -82,7 +84,10 @@ async function fetchRows<Row extends object>(
 export const listCustomers = defineMasterDataTool({
   name: 'mite_list_customers',
   title: 'List customers',
-  description: 'Customers from mite: active ones, or the archived ones with `archived: true`.',
+  description:
+    'Lists customers from mite, active ones or with `archived: true` the archived ones; use it to look up customer ids for filters such as `customer_id` in `mite_list_time_entries`. ' +
+    'Returns id, name, archived flag and note per customer. ' +
+    'The whole list is returned at once without paging.',
   resource: 'customers',
   noun: 'customers',
   textFields: ['name', 'note'],
@@ -93,8 +98,9 @@ export const listProjects = defineMasterDataTool({
   name: 'mite_list_projects',
   title: 'List projects',
   description:
-    'Projects from mite: active ones, or the archived ones with `archived: true`. ' +
-    '`budget` is in the unit given by `budget_type` (minutes or cents).',
+    'Lists projects from mite, active ones or with `archived: true` the archived ones; use it to look up project ids for filters such as `project_id` in `mite_list_time_entries`, for budget usage use `mite_report_budget`. ' +
+    'Returns id, name, customer, archived flag, note, `budget` and `budget_type`; `budget` is in the unit given by `budget_type` (minutes or cents), not hours or currency units. ' +
+    'The whole list is returned at once without paging.',
   resource: 'projects',
   noun: 'projects',
   textFields: ['name', 'customer_name', 'note'],
@@ -122,7 +128,10 @@ export const listProjects = defineMasterDataTool({
 export const listServices = defineMasterDataTool({
   name: 'mite_list_services',
   title: 'List services',
-  description: 'Services from mite: active ones, or the archived ones with `archived: true`.',
+  description:
+    'Lists services (activity types) from mite, active ones or with `archived: true` the archived ones; use it to look up service ids for filters such as `service_id` in `mite_list_time_entries`. ' +
+    'Returns id, name, billable flag, archived flag and note per service. ' +
+    'The whole list is returned at once without paging.',
   resource: 'services',
   noun: 'services',
   textFields: ['name', 'note'],
@@ -139,8 +148,9 @@ export const listUsers = defineMasterDataTool({
   name: 'mite_list_users',
   title: 'List users',
   description:
-    'Users from mite: active ones, or the archived ones with `archived: true`. ' +
-    'Email addresses and hourly rates are not returned.',
+    'Lists users from mite, active ones or with `archived: true` the archived ones; use it to look up user ids for `user_id` in `mite_list_time_entries`, and `mite_whoami` for the current user. ' +
+    'Returns id, name, role and archived flag per user; email addresses and hourly rates are not returned. ' +
+    'The whole list is returned at once without paging.',
   resource: 'users',
   noun: 'users',
   textFields: ['name'],
