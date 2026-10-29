@@ -85,8 +85,7 @@ function defineMasterDataWriteTools(spec: MasterDataWriteSpec) {
     description:
       `Changes fields of an existing ${entity}; fields that are not given stay as they are, but at least one must be given. Use \`mite_create_${entity}\` for a new one and \`mite_list_${resource}\` to find the id. ` +
       '`archived: true` archives it, `archived: false` restores it; archiving is the alternative to deleting. ' +
-      'Returns the names of the updated fields; with `dry_run: true` it returns the planned changes and writes nothing. ' +
-      'Needs mode admin.',
+      'Returns the names of the updated fields; with `dry_run: true` it returns the planned changes and writes nothing, and it needs mode admin.',
     mode: 'admin',
     annotations: {
       readOnlyHint: false,

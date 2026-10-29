@@ -51,8 +51,8 @@ export const updateTimeEntry = defineTool({
   title: 'Update a time entry',
   description:
     'Changes fields of an existing time entry (date, hours, note, project, service); fields that are not given stay as they are, but at least one must be given. Use `mite_create_time_entry` for a new entry. ' +
-    'Returns the names of the updated fields; with `dry_run: true` it returns current and new values and writes nothing. ' +
-    'Needs mode write or admin. A locked entry cannot be changed; in mode admin, `force: true` changes a locked entry in two steps: ' +
+    'Returns the names of the updated fields; with `dry_run: true` it returns current and new values and writes nothing, and it needs mode write or admin. ' +
+    'A locked entry cannot be changed; in mode admin, `force: true` changes a locked entry in two steps: ' +
     'the first call (or dry_run: true) returns a preview and a confirm_token; only a second call with that token, ' +
     'valid for 5 minutes and usable once, writes.',
   mode: 'write',
