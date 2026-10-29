@@ -1,11 +1,14 @@
 # mite-mcp-server
 
 [![CI](https://github.com/Stefan39/mite-mcp-server/actions/workflows/ci.yml/badge.svg)](https://github.com/Stefan39/mite-mcp-server/actions/workflows/ci.yml)
+[![npm](https://img.shields.io/npm/v/mite-mcp-server.svg)](https://www.npmjs.com/package/mite-mcp-server)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 **English** · [Deutsch](README.de.md)
 
 Ask Claude about your [mite](https://mite.de) time tracking — "How many hours did we spend on each project per month this year, and what did that earn?" — and get the answer from a report mite computes itself, not from hundreds of entries the model has to add up.
+
+![Demo: monthly report per project in a chat (invented data)](https://raw.githubusercontent.com/Stefan39/mite-mcp-server/main/docs/images/demo-monthly-report.gif)
 
 > Unofficial. Not affiliated with or endorsed by mite GmbH.
 
