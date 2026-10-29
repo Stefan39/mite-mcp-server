@@ -1,6 +1,6 @@
 {
   "name": "mite-mcp-server",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "mcpName": "io.github.Stefan39/mite-mcp-server",
   "description": "MCP server for the mite time tracking API — ready-made reports and a safety layer (read-only by default). Unofficial.",
   "keywords": [
