@@ -3,7 +3,7 @@
   "manifest_version": "0.2",
   "name": "mite-mcp-server",
   "display_name": "mite",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "Fragen Sie Claude nach Ihrer mite-Zeiterfassung: fertige Auswertungen, standardmäßig nur lesend. Inoffiziell.",
   "long_description": "Auswertungen zu Stunden, Umsatz, Budgets und abrechenbarem Anteil, die mite auf dem eigenen Server berechnet, dazu Zeiteinträge und Stammdaten. Der Server startet nur lesend; Zeiteinträge schreiben und Stammdaten verwalten sind eigene Schalter in den Einstellungen. Ihr API-Key wird von Claude Desktop sicher gespeichert und nie protokolliert. Inoffiziell, keine Verbindung zur mite GmbH.",
   "author": {
