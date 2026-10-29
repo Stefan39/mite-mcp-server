@@ -13,7 +13,9 @@ const inputSchema = z.object({
   group_by: z
     .enum(GROUP_KEYS)
     .optional()
-    .describe(`One of: ${GROUP_KEYS.join(', ')}. Default: only the total.`),
+    .describe(
+      `One of: ${GROUP_KEYS.join(', ')}, e.g. "customer". Default: only the total, no rows.`,
+    ),
 });
 
 export interface RatioRow {
@@ -99,7 +101,10 @@ export const reportBillableRatio = defineTool({
   title: 'Billable and non-billable hours with billable share',
   description:
     'Billable hours, non-billable hours and the billable share in percent for a period, ' +
-    `optionally per ${GROUP_KEYS.join(', ')}. Aggregated on the mite server.`,
+    `optionally per ${GROUP_KEYS.join(', ')}, aggregated on the mite server. ` +
+    'For revenue or other groupings use `mite_report`. ' +
+    'Returns hours and a ratio in percent with one decimal, per group and as a total. ' +
+    'Read-only, no paging, default period is this year.',
   mode: 'read-only',
   annotations: { readOnlyHint: true, openWorldHint: true },
   inputSchema,

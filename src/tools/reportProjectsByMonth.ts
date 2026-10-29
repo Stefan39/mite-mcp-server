@@ -9,11 +9,22 @@ const idList = z.array(z.number().int().positive()).min(1).optional();
 
 export const filterShape = {
   ...periodShape,
-  customer_id: idList.describe('Only these customers.'),
-  project_id: idList.describe('Only these projects.'),
-  service_id: idList.describe('Only these services.'),
-  user_id: idList.describe('Only these users (needs a key that may see other users).'),
-  billable: z.boolean().optional().describe('true = only billable, false = only non-billable.'),
+  customer_id: idList.describe(
+    'Only these customers: list of mite customer ids, e.g. [123, 456]. Default: all customers.',
+  ),
+  project_id: idList.describe(
+    'Only these projects: list of mite project ids, e.g. [789]. Default: all projects.',
+  ),
+  service_id: idList.describe(
+    'Only these services: list of mite service ids, e.g. [42]. Default: all services.',
+  ),
+  user_id: idList.describe(
+    'Only these users: list of mite user ids, e.g. [7]. Needs an API key that may see other users. Default: all users the key may see.',
+  ),
+  billable: z
+    .boolean()
+    .optional()
+    .describe('true = only billable entries, false = only non-billable entries. Default: both.'),
 };
 
 const inputSchema = z.object(filterShape);
@@ -98,8 +109,11 @@ export const reportProjectsByMonth = defineTool({
   name: 'mite_report_projects_by_month',
   title: 'Hours and revenue per project and month',
   description:
-    'Aggregated report from mite: hours and revenue per project and month for a period. ' +
-    'mite groups on the server, so this works for whole years without reading single entries.',
+    'Aggregated report from mite: hours and revenue per project and month for a period, ' +
+    'grouped on the mite server so whole years work without reading single entries. ' +
+    'For other groupings or totals use `mite_report`; for single entries use `mite_list_time_entries`. ' +
+    'Returns rows of month (YYYY-MM), project, hours and revenue in currency units plus a total; ' +
+    'revenue is null without rates. Read-only, no paging, default period is this year.',
   mode: 'read-only',
   annotations: { readOnlyHint: true, openWorldHint: true },
   inputSchema,
