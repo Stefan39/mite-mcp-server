@@ -5,6 +5,15 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), ver
 
 ## [Unreleased]
 
+### Added
+
+- Claude Desktop bundle (`.mcpb`): install with a double click and configure in the extension settings — mite account, API key (stored securely, shown masked), switches "Zeiteinträge schreiben erlauben" and "Stammdaten verwalten" (both off by default) and an optional tool allowlist. CI builds the bundle and attaches it to every published release.
+- `MITE_ALLOW_WRITE` and `MITE_ALLOW_ADMIN` (`true`/`false`) as an alternative to `MITE_MODE`; admin includes writing. `MITE_MODE` combined with a switch set to `true` is refused.
+
+### Changed
+
+- Configuration values that are empty or still an unresolved `${…}` placeholder count as unset.
+
 ## [0.4.0] - 2026-10-28
 
 ### Added

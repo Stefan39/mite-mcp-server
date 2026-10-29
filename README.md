@@ -61,7 +61,25 @@ In mode `admin` only, `mite_update_time_entry` and `mite_delete_time_entry` addi
 
 More tools (more reports) are planned — see [the architecture decision](docs/adr/0001-architecture.md).
 
-## Quickstart (Claude Desktop)
+## Install without technical knowledge (Claude Desktop)
+
+1. Download [`mite-mcp-server.mcpb`](https://github.com/Stefan39/mite-mcp-server/releases/latest/download/mite-mcp-server.mcpb) from the latest release.
+2. Double-click the file. Claude Desktop opens and offers to install the extension.
+3. Fill in the settings and enable the extension:
+
+| Setting                         | Meaning                                                                                          |
+| ------------------------------- | ------------------------------------------------------------------------------------------------ |
+| mite-Account                    | The name in your mite address: for `https://example.mite.de` enter `example`                     |
+| API-Key                         | Your personal mite API key; Claude Desktop stores it securely and shows it masked                |
+| Zeiteinträge schreiben erlauben | Off (default): read only. On: create, change and delete time entries, start and stop the tracker |
+| Stammdaten verwalten            | Off (default). On: manage customers, projects and services; includes writing time entries        |
+| Erlaubte Werkzeuge              | Optional, comma-separated tool names; empty means every tool the switches allow                  |
+
+No JSON, no environment variables, no Node.js installation: Claude Desktop runs the bundle with its built-in Node.js. You need a mite account with API access enabled (in your mite user settings) and your API key from there. The settings are in German because mite's users mostly are.
+
+Changing a setting later: Claude Desktop → Settings → Extensions → mite. In the same place you can also switch single tools on and off — on top of the switches above, which decide which tools exist at all.
+
+## Manual setup (Claude Desktop, for developers)
 
 Requirements: Node.js 22 or newer, a mite account with API access enabled (enable it in your mite user settings), and your API key from there.
 
@@ -93,12 +111,16 @@ Then ask, for example: _"Show me hours and revenue per project and month for thi
 
 ## Configuration
 
-| Variable       | Required | Meaning                                                         |
-| -------------- | -------- | --------------------------------------------------------------- |
-| `MITE_ACCOUNT` | yes      | Account name — the subdomain of `https://<account>.mite.de`     |
-| `MITE_API_KEY` | yes      | Your personal mite API key                                      |
-| `MITE_MODE`    | no       | `read-only` (default), `write` or `admin`                       |
-| `MITE_TOOLS`   | no       | Comma-separated allowlist, e.g. `mite_report_projects_by_month` |
+| Variable           | Required | Meaning                                                                     |
+| ------------------ | -------- | --------------------------------------------------------------------------- |
+| `MITE_ACCOUNT`     | yes      | Account name — the subdomain of `https://<account>.mite.de`                 |
+| `MITE_API_KEY`     | yes      | Your personal mite API key                                                  |
+| `MITE_MODE`        | no       | `read-only` (default), `write` or `admin`                                   |
+| `MITE_ALLOW_WRITE` | no       | `true` = mode `write`; set by the bundle switch, alternative to `MITE_MODE` |
+| `MITE_ALLOW_ADMIN` | no       | `true` = mode `admin`; set by the bundle switch, alternative to `MITE_MODE` |
+| `MITE_TOOLS`       | no       | Comma-separated allowlist, e.g. `mite_report_projects_by_month`             |
+
+Use either `MITE_MODE` or the two switches; the server refuses `MITE_MODE` together with a switch set to `true`. Values `true`/`false` (also `1`/`0`, `yes`/`no`, `on`/`off`).
 
 mite still checks every call against the role of your key. The server can only restrict that, never extend it.
 

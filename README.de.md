@@ -61,7 +61,25 @@ Nur im Modus `admin` akzeptieren `mite_update_time_entry` und `mite_delete_time_
 
 Weitere Werkzeuge (weitere Auswertungen) sind geplant — siehe [Architekturentscheidung](docs/adr/0001-architecture.md).
 
-## Schnellstart (Claude Desktop)
+## Installation ohne Technik (Claude Desktop)
+
+1. [`mite-mcp-server.mcpb`](https://github.com/Stefan39/mite-mcp-server/releases/latest/download/mite-mcp-server.mcpb) aus dem neuesten Release herunterladen.
+2. Die Datei doppelklicken. Claude Desktop öffnet sich und bietet die Installation der Erweiterung an.
+3. Die Einstellungen ausfüllen und die Erweiterung aktivieren:
+
+| Einstellung                     | Bedeutung                                                                                                   |
+| ------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| mite-Account                    | Der Name in Ihrer mite-Adresse: bei `https://beispiel.mite.de` geben Sie `beispiel` ein                     |
+| API-Key                         | Ihr persönlicher mite-API-Key; Claude Desktop speichert ihn sicher und zeigt ihn maskiert an                |
+| Zeiteinträge schreiben erlauben | Aus (Standard): nur lesen. An: Zeiteinträge anlegen, ändern und löschen, Tracker starten und stoppen        |
+| Stammdaten verwalten            | Aus (Standard). An: Kunden, Projekte und Leistungen verwalten; schließt das Schreiben von Zeiteinträgen ein |
+| Erlaubte Werkzeuge              | Optional, kommagetrennte Werkzeugnamen; leer heißt: alle Werkzeuge, die die Schalter erlauben               |
+
+Kein JSON, keine Umgebungsvariablen, keine Node.js-Installation: Claude Desktop startet das Bundle mit seinem eingebauten Node.js. Sie brauchen einen mite-Account mit freigeschaltetem API-Zugriff (in den Benutzereinstellungen von mite aktivieren) und Ihren API-Key von dort.
+
+Einstellungen später ändern: Claude Desktop → Einstellungen → Erweiterungen → mite. Dort lassen sich zusätzlich einzelne Werkzeuge ein- und ausschalten — ergänzend zu den Schaltern oben, die festlegen, welche Werkzeuge es überhaupt gibt.
+
+## Manuelle Einrichtung (Claude Desktop, für Entwickler)
 
 Voraussetzungen: Node.js 22 oder neuer, ein mite-Account mit freigeschaltetem API-Zugriff (in den Benutzereinstellungen von mite aktivieren) und Ihr API-Key von dort.
 
@@ -93,12 +111,16 @@ Dann zum Beispiel fragen: _„Zeig mir Stunden und Umsatz je Projekt und Monat f
 
 ## Konfiguration
 
-| Variable       | Pflicht | Bedeutung                                                       |
-| -------------- | ------- | --------------------------------------------------------------- |
-| `MITE_ACCOUNT` | ja      | Account-Name — die Subdomain von `https://<account>.mite.de`    |
-| `MITE_API_KEY` | ja      | Ihr persönlicher mite-API-Key                                   |
-| `MITE_MODE`    | nein    | `read-only` (Standard), `write` oder `admin`                    |
-| `MITE_TOOLS`   | nein    | Kommagetrennte Allowlist, z. B. `mite_report_projects_by_month` |
+| Variable           | Pflicht | Bedeutung                                                                        |
+| ------------------ | ------- | -------------------------------------------------------------------------------- |
+| `MITE_ACCOUNT`     | ja      | Account-Name — die Subdomain von `https://<account>.mite.de`                     |
+| `MITE_API_KEY`     | ja      | Ihr persönlicher mite-API-Key                                                    |
+| `MITE_MODE`        | nein    | `read-only` (Standard), `write` oder `admin`                                     |
+| `MITE_ALLOW_WRITE` | nein    | `true` = Modus `write`; setzt der Schalter im Bundle, Alternative zu `MITE_MODE` |
+| `MITE_ALLOW_ADMIN` | nein    | `true` = Modus `admin`; setzt der Schalter im Bundle, Alternative zu `MITE_MODE` |
+| `MITE_TOOLS`       | nein    | Kommagetrennte Allowlist, z. B. `mite_report_projects_by_month`                  |
+
+Entweder `MITE_MODE` oder die beiden Schalter; `MITE_MODE` zusammen mit einem Schalter auf `true` lehnt der Server ab. Werte `true`/`false` (auch `1`/`0`, `yes`/`no`, `on`/`off`).
 
 mite prüft jeden Aufruf weiterhin gegen die Rolle Ihres Keys. Der Server kann das nur einschränken, nie erweitern.
 

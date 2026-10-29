@@ -1,0 +1,77 @@
+{
+  "$schema": "https://raw.githubusercontent.com/modelcontextprotocol/mcpb/main/dist/mcpb-manifest-v0.2.schema.json",
+  "manifest_version": "0.2",
+  "name": "mite-mcp-server",
+  "display_name": "mite",
+  "version": "0.4.0",
+  "description": "Fragen Sie Claude nach Ihrer mite-Zeiterfassung: fertige Auswertungen, standardmäßig nur lesend. Inoffiziell.",
+  "long_description": "Auswertungen zu Stunden, Umsatz, Budgets und abrechenbarem Anteil, die mite auf dem eigenen Server berechnet, dazu Zeiteinträge und Stammdaten. Der Server startet nur lesend; Zeiteinträge schreiben und Stammdaten verwalten sind eigene Schalter in den Einstellungen. Ihr API-Key wird von Claude Desktop sicher gespeichert und nie protokolliert. Inoffiziell, keine Verbindung zur mite GmbH.",
+  "author": {
+    "name": "Stefan Jacomeit",
+    "url": "https://www.jacomeit.de"
+  },
+  "homepage": "https://github.com/Stefan39/mite-mcp-server",
+  "documentation": "https://github.com/Stefan39/mite-mcp-server#readme",
+  "support": "https://github.com/Stefan39/mite-mcp-server/issues",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Stefan39/mite-mcp-server.git"
+  },
+  "license": "MIT",
+  "keywords": ["mite", "time tracking", "reports", "zeiterfassung"],
+  "server": {
+    "type": "node",
+    "entry_point": "server/index.js",
+    "mcp_config": {
+      "command": "node",
+      "args": ["${__dirname}/server/index.js"],
+      "env": {
+        "MITE_ACCOUNT": "${user_config.account}",
+        "MITE_API_KEY": "${user_config.api_key}",
+        "MITE_ALLOW_WRITE": "${user_config.allow_write}",
+        "MITE_ALLOW_ADMIN": "${user_config.allow_admin}",
+        "MITE_TOOLS": "${user_config.tools}"
+      }
+    }
+  },
+  "tools_generated": true,
+  "user_config": {
+    "account": {
+      "type": "string",
+      "title": "mite-Account",
+      "description": "Der Name in Ihrer mite-Adresse: bei https://beispiel.mite.de geben Sie beispiel ein.",
+      "required": true
+    },
+    "api_key": {
+      "type": "string",
+      "title": "API-Key",
+      "description": "Ihr persönlicher mite-API-Key (API-Zugriff in den Benutzereinstellungen von mite aktivieren). Wird sicher gespeichert, nie protokolliert.",
+      "required": true,
+      "sensitive": true
+    },
+    "allow_write": {
+      "type": "boolean",
+      "title": "Zeiteinträge schreiben erlauben",
+      "description": "Aus: Claude kann nur lesen. An: Claude kann auch Zeiteinträge anlegen, ändern und löschen sowie den Tracker starten und stoppen.",
+      "default": false
+    },
+    "allow_admin": {
+      "type": "boolean",
+      "title": "Stammdaten verwalten",
+      "description": "Claude darf Kunden, Projekte und Leistungen anlegen, ändern, archivieren und löschen. Schließt das Schreiben von Zeiteinträgen ein.",
+      "default": false
+    },
+    "tools": {
+      "type": "string",
+      "title": "Erlaubte Werkzeuge (optional)",
+      "description": "Kommagetrennte Werkzeugnamen, z. B. mite_report, mite_whoami. Leer: alle Werkzeuge, die die Schalter oben erlauben.",
+      "default": ""
+    }
+  },
+  "compatibility": {
+    "platforms": ["darwin", "win32", "linux"],
+    "runtimes": {
+      "node": ">=22.0.0"
+    }
+  }
+}
