@@ -9,7 +9,9 @@ const inputSchema = z.object({
     .array(z.number().int().positive())
     .min(1)
     .optional()
-    .describe('Only these projects. Default: all active projects with a budget.'),
+    .describe(
+      'Only these projects: list of mite project ids, e.g. [789]. Default: all active projects with a budget.',
+    ),
 });
 
 export interface BudgetRow {
@@ -88,9 +90,11 @@ export const reportBudget = defineTool({
   name: 'mite_report_budget',
   title: 'Project budgets and their consumption',
   description:
-    'Budget, consumption, remaining budget and percent used per project over the whole project life. ' +
-    'Minute budgets are in hours, cent budgets in currency units (consumption = revenue). ' +
-    'Without project_id: all active projects with a budget.',
+    'Budget, consumption, remaining budget and percent used per project over the whole project life, ' +
+    'not for a period; for hours or revenue in a period use `mite_report`. ' +
+    'Minute budgets are in hours, cent budgets in currency units (consumption = revenue); ' +
+    'budget, remaining and percent are null for projects without a budget. ' +
+    'Without project_id: all active projects with a budget. Read-only, no paging.',
   mode: 'read-only',
   annotations: { readOnlyHint: true, openWorldHint: true },
   inputSchema,

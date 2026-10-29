@@ -24,10 +24,17 @@ export const periodValue = z
 export const periodShape = {
   from: periodValue
     .optional()
-    .describe('Start date (YYYY-MM-DD) or a keyword such as this_month. Default: this_year.'),
+    .describe(
+      `Start of the period: a date as YYYY-MM-DD (e.g. 2026-01-01) or a keyword (${KEYWORDS.join(', ')}). ` +
+        'A keyword alone selects that whole period and ignores the end of it; a date alone runs up to today. ' +
+        'Default: this_year (when from and to are both omitted).',
+    ),
   to: periodValue
     .optional()
-    .describe('End date (YYYY-MM-DD) or a keyword. Default: the end of the period given in from.'),
+    .describe(
+      `End of the period: a date as YYYY-MM-DD (e.g. 2026-03-31) or a keyword (${KEYWORDS.join(', ')}). ` +
+        'Default: today when only from is a date; without from the period is just this date.',
+    ),
 };
 
 /** Translates the optional from/to input into mite query parameters. */

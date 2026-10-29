@@ -18,7 +18,9 @@ const inputSchema = z.object({
     .refine((keys) => new Set(keys).size === keys.length, {
       message: 'group_by values must be distinct',
     })
-    .describe(`1 to 3 distinct values from: ${GROUP_KEYS.join(', ')}.`),
+    .describe(
+      `1 to 3 distinct values from: ${GROUP_KEYS.join(', ')}, e.g. ["customer", "month"]. Required; the order sets the column order.`,
+    ),
   ...filterShape,
 });
 
@@ -165,8 +167,11 @@ export const report = defineTool({
   title: 'Hours and revenue grouped by up to three levels',
   description:
     'Aggregated report from mite: hours, revenue and share of hours, grouped by 1 to 3 of ' +
-    `${GROUP_KEYS.join(', ')} for a period. ` +
-    'mite groups on the server, so this works for whole years without reading single entries.',
+    `${GROUP_KEYS.join(', ')} for a period, on the mite server so whole years work. ` +
+    'For the fixed project-by-month view use `mite_report_projects_by_month`, for billable share ' +
+    'use `mite_report_billable_ratio`, for budgets use `mite_report_budget`. ' +
+    'Returns rows with hours, revenue in currency units (null without rates) and share of hours in percent, ' +
+    'plus a total. Read-only, no paging, default period is this year.',
   mode: 'read-only',
   annotations: { readOnlyHint: true, openWorldHint: true },
   inputSchema,
