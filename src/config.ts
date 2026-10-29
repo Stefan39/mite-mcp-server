@@ -14,8 +14,21 @@ export interface Config {
 
 type Env = Record<string, string | undefined>;
 
-function required(env: Env, name: string): string {
+/**
+ * Reads a variable, trimmed. Empty values and placeholders that the MCP
+ * bundle host left unresolved (`${user_config.tools}` for an optional
+ * setting without a value) count as unset.
+ */
+function read(env: Env, name: string): string | undefined {
   const value = env[name]?.trim();
+  if (!value || /^\$\{[^}]+\}$/.test(value)) {
+    return undefined;
+  }
+  return value;
+}
+
+function required(env: Env, name: string): string {
+  const value = read(env, name);
   if (!value) {
     throw new ConfigError(`Environment variable ${name} is not set.`);
   }
@@ -35,16 +48,47 @@ function parseAccount(raw: string): string {
   return account;
 }
 
-function parseMode(raw: string | undefined): Mode {
-  const mode = raw?.trim() || 'read-only';
-  if (!(MODES as readonly string[]).includes(mode)) {
-    throw new ConfigError(`MITE_MODE must be one of: ${MODES.join(', ')}.`);
+const TRUE_VALUES = ['true', '1', 'yes', 'on'];
+const FALSE_VALUES = ['false', '0', 'no', 'off'];
+
+function parseSwitch(env: Env, name: string): boolean {
+  const raw = read(env, name)?.toLowerCase();
+  if (raw === undefined || FALSE_VALUES.includes(raw)) {
+    return false;
   }
-  return mode as Mode;
+  if (TRUE_VALUES.includes(raw)) {
+    return true;
+  }
+  throw new ConfigError(`${name} must be true or false.`);
 }
 
-function parseTools(raw: string | undefined): readonly string[] | undefined {
-  const tools = (raw ?? '')
+/**
+ * `MITE_MODE` is for people who write the configuration by hand. The MCP
+ * bundle offers no choice field, so its settings arrive as two switches:
+ * `MITE_ALLOW_WRITE` and `MITE_ALLOW_ADMIN`. Admin includes writing, because
+ * the modes are ranked. Mixing both styles is refused rather than guessed.
+ */
+function parseMode(env: Env): Mode {
+  const allowWrite = parseSwitch(env, 'MITE_ALLOW_WRITE');
+  const allowAdmin = parseSwitch(env, 'MITE_ALLOW_ADMIN');
+  const explicit = read(env, 'MITE_MODE');
+  if (explicit !== undefined) {
+    if (!(MODES as readonly string[]).includes(explicit)) {
+      throw new ConfigError(`MITE_MODE must be one of: ${MODES.join(', ')}.`);
+    }
+    if (allowWrite || allowAdmin) {
+      throw new ConfigError('Set either MITE_MODE or MITE_ALLOW_WRITE/MITE_ALLOW_ADMIN, not both.');
+    }
+    return explicit as Mode;
+  }
+  if (allowAdmin) {
+    return 'admin';
+  }
+  return allowWrite ? 'write' : 'read-only';
+}
+
+function parseTools(env: Env): readonly string[] | undefined {
+  const tools = (read(env, 'MITE_TOOLS') ?? '')
     .split(',')
     .map((tool) => tool.trim())
     .filter((tool) => tool !== '');
@@ -55,7 +99,7 @@ export function loadConfig(env: Env): Config {
   return {
     account: parseAccount(required(env, 'MITE_ACCOUNT')),
     apiKey: required(env, 'MITE_API_KEY'),
-    mode: parseMode(env['MITE_MODE']),
-    tools: parseTools(env['MITE_TOOLS']),
+    mode: parseMode(env),
+    tools: parseTools(env),
   };
 }

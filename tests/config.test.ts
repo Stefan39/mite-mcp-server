@@ -45,3 +45,52 @@ describe('loadConfig', () => {
     expect(loadConfig({ ...base, MITE_TOOLS: ' , ' }).tools).toBeUndefined();
   });
 });
+
+describe('loadConfig mode switches', () => {
+  it.each([
+    [{}, 'read-only'],
+    [{ MITE_ALLOW_WRITE: 'false', MITE_ALLOW_ADMIN: 'false' }, 'read-only'],
+    [{ MITE_ALLOW_WRITE: 'true' }, 'write'],
+    [{ MITE_ALLOW_WRITE: 'true', MITE_ALLOW_ADMIN: 'false' }, 'write'],
+    [{ MITE_ALLOW_ADMIN: 'true' }, 'admin'],
+    [{ MITE_ALLOW_WRITE: 'true', MITE_ALLOW_ADMIN: 'true' }, 'admin'],
+    [{ MITE_ALLOW_WRITE: ' TRUE ' }, 'write'],
+    [{ MITE_ALLOW_WRITE: '1' }, 'write'],
+    [{ MITE_ALLOW_WRITE: '' }, 'read-only'],
+  ])('derives the mode from %o', (switches, expected) => {
+    expect(loadConfig({ ...base, ...switches }).mode).toBe(expected);
+  });
+
+  it('rejects a switch that is not true or false', () => {
+    expect(() => loadConfig({ ...base, MITE_ALLOW_WRITE: 'maybe' })).toThrow(
+      'MITE_ALLOW_WRITE must be true or false',
+    );
+  });
+
+  it('keeps MITE_MODE for hand-written configurations', () => {
+    expect(
+      loadConfig({ ...base, MITE_MODE: 'write', MITE_ALLOW_WRITE: 'false', MITE_ALLOW_ADMIN: '0' })
+        .mode,
+    ).toBe('write');
+  });
+
+  it('refuses MITE_MODE combined with an enabled switch', () => {
+    expect(() => loadConfig({ ...base, MITE_MODE: 'read-only', MITE_ALLOW_WRITE: 'true' })).toThrow(
+      'not both',
+    );
+  });
+
+  it('treats placeholders left by the bundle host as unset', () => {
+    const config = loadConfig({
+      ...base,
+      MITE_MODE: '${user_config.mode}',
+      MITE_ALLOW_WRITE: '${user_config.allow_write}',
+      MITE_TOOLS: '${user_config.tools}',
+    });
+    expect(config.mode).toBe('read-only');
+    expect(config.tools).toBeUndefined();
+    expect(() => loadConfig({ ...base, MITE_API_KEY: '${user_config.api_key}' })).toThrow(
+      'MITE_API_KEY is not set',
+    );
+  });
+});

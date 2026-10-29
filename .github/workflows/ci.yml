@@ -32,3 +32,12 @@ jobs:
         run: |
           if node dist/index.js 2> err.txt; then exit 1; fi
           grep -q "MITE_ACCOUNT is not set" err.txt
+      - name: Build the Claude Desktop bundle (.mcpb)
+        if: matrix.node == 22
+        run: npm run bundle
+      - uses: actions/upload-artifact@v4
+        if: matrix.node == 22
+        with:
+          name: mcpb
+          path: '*.mcpb'
+          if-no-files-found: error

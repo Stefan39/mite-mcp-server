@@ -15,7 +15,7 @@ Existing MCP servers for mite are small, cover booking or master data only, and 
 
 - TypeScript on the official MCP SDK v2 (`@modelcontextprotocol/server`), zod 4, Node.js ≥ 22.
 - Transport stdio first; Streamable HTTP and hosted operation later.
-- Distribution via npm (`npx -y mite-mcp-server`), later additionally as an MCP bundle (`.mcpb`) for one-click install in Claude Desktop.
+- Distribution via npm (`npx -y mite-mcp-server`) and as an MCP bundle (`.mcpb`) for one-click install in Claude Desktop ✅. The bundle has no choice field, so its settings set `MITE_ALLOW_WRITE` and `MITE_ALLOW_ADMIN`; the server derives the mode from them.
 
 ### Tool layout
 
