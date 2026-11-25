@@ -18,7 +18,7 @@ export const periodValue = z
     (value) =>
       (KEYWORDS as readonly string[]).includes(value) ||
       (/^\d{4}-\d{2}-\d{2}$/.test(value) && !Number.isNaN(Date.parse(value))),
-    { message: `Use YYYY-MM-DD or one of: ${KEYWORDS.join(', ')}` },
+    { error: `Use YYYY-MM-DD or one of: ${KEYWORDS.join(', ')}` },
   );
 
 export const periodShape = {

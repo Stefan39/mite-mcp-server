@@ -16,7 +16,7 @@ const inputSchema = z.object({
     .min(1)
     .max(3)
     .refine((keys) => new Set(keys).size === keys.length, {
-      message: 'group_by values must be distinct',
+      error: 'group_by values must be distinct',
     })
     .describe(
       `1 to 3 distinct values from: ${GROUP_KEYS.join(', ')}, e.g. ["customer", "month"]. Required; the order sets the column order.`,
