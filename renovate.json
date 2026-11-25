@@ -3,6 +3,17 @@
   "extends": ["config:recommended", "helpers:pinGitHubActionDigests", ":semanticCommits"],
   "packageRules": [
     { "matchDepTypes": ["devDependencies"], "automerge": true },
-    { "matchManagers": ["github-actions"], "automerge": true }
+    { "matchManagers": ["github-actions"], "automerge": true },
+    {
+      "description": "Keep @types/node on the lowest supported Node major (engines: >=22), so code cannot use APIs Node 22 lacks.",
+      "matchPackageNames": ["@types/node"],
+      "allowedVersions": "<23"
+    },
+    {
+      "description": "TypeScript majors wait for typescript-eslint support (peer range). Approve from the Dependency Dashboard once it is there.",
+      "matchPackageNames": ["typescript"],
+      "matchUpdateTypes": ["major"],
+      "dependencyDashboardApproval": true
+    }
   ]
 }

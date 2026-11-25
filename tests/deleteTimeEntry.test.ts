@@ -32,7 +32,7 @@ const setup = async (
     init?.method === 'DELETE'
       ? (requests.push({
           method: 'DELETE',
-          url: new URL(input),
+          url: new URL(input instanceof Request ? input.url : input),
           headers: {},
         }),
         Promise.resolve(
